@@ -23,6 +23,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = (password: string): boolean => {
     const correctPassword = import.meta.env.VITE_ADMIN_PASSWORD;
+    // Temporary debug - remove this after fixing
+    console.log("Password check:", { 
+      input: password, 
+      correct: correctPassword, 
+      match: password === correctPassword 
+    });
     if (password === correctPassword) {
       localStorage.setItem("admin_auth", "authenticated");
       setIsAuthenticated(true);
