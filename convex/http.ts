@@ -36,9 +36,9 @@ http.route({
       feedUrl = `${siteUrl}/feed`;
     }
 
-    const siteTitle = "Things to be Happy About";
+    const siteTitle = "things to be happy about";
     const siteDescription =
-      "A daily journal of things to be happy about - capturing life's joyful moments, one day at a time.";
+      "5 Things to be Happy About, ideally on the daily.";
 
     // Build RSS feed
     const rssItems = entries.page
@@ -59,7 +59,7 @@ http.route({
 
         return `
     <item>
-      <title>${escapeXml(entry.date)} - Things to be Happy About</title>
+      <title>${escapeXml(entry.date)} - things to be happy about</title>
       <link>${escapeXml(entryUrl)}</link>
       <guid isPermaLink="true">${escapeXml(entryUrl)}</guid>
       <pubDate>${pubDate}</pubDate>
