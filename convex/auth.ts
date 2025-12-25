@@ -87,23 +87,26 @@ export const checkAuth = query({
       return { authenticated: false };
     }
 
-    const session = await ctx.db
-      .query("sessions")
-      .withIndex("by_token", (q) => q.eq("token", args.token!))
-      .first();
+    try {
+      const session = await ctx.db
+        .query("sessions")
+        .withIndex("by_token", (q) => q.eq("token", args.token!))
+        .first();
 
-    if (!session) {
+      if (!session) {
+        return { authenticated: false };
+      }
+
+      // Check if session has expired
+      if (Date.now() > session.expiresAt) {
+        return { authenticated: false };
+      }
+
+      return { authenticated: true, expiresAt: session.expiresAt };
+    } catch (error) {
+      console.error("Auth check error:", error);
       return { authenticated: false };
     }
-
-    // Check if session has expired
-    if (Date.now() > session.expiresAt) {
-      // Just return false - queries cannot delete
-      // Expired sessions will be cleaned up by a separate function
-      return { authenticated: false };
-    }
-
-    return { authenticated: true, expiresAt: session.expiresAt };
   },
 });
 
