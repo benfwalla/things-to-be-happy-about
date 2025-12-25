@@ -75,32 +75,11 @@ async function generateWeeklyCollage(weekStart: string, weekEnd: string) {
       throw new Error("No image data received from OpenAI");
     }
     
-    // Upload image to Convex storage via HTTP
-    console.log("Image data length:", imageData.length);
+    // For now, store the image as base64 in the database
+    // Note: This has size limitations, but will work for testing
+    const imageUrl = `data:image/png;base64,${imageData}`;
     
-    // Convert base64 to buffer
-    const imageBuffer = Buffer.from(imageData, 'base64');
-    
-    // Store the image via HTTP endpoint
-    const convexUrl = process.env.CONVEX_DEPLOYMENT || process.env.NEXT_PUBLIC_CONVEX_URL;
-    const storeUrl = `${convexUrl}/storeImage?weekStart=${weekStart}&contentType=image/png`;
-    console.log("Store URL:", storeUrl);
-    const storeResponse = await fetch(storeUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'image/png',
-      },
-      body: imageBuffer,
-    });
-    
-    if (!storeResponse.ok) {
-      throw new Error(`Failed to store image: ${storeResponse.statusText}`);
-    }
-    
-    const { imageUrl } = await storeResponse.json();
-    
-    console.log("Image stored successfully");
-    console.log("Image URL:", imageUrl);
+    console.log("Image prepared (base64 data URL)");
     
     // Save to Convex database
     console.log("Saving weekly image to database...");
