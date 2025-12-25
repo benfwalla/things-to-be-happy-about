@@ -1,0 +1,56 @@
+/* Base card styles shared between EntryCard and AdminEntryCard */
+.entry-card,
+.admin-entry-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 4px;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(90, 74, 58, 0.1);
+  width: 600px;
+  max-width: 90vw;
+  border: 1px solid rgba(139, 119, 101, 0.1);
+}
+
+.entry-date {
+  font-size: 1.1rem;
+  color: #8b7765;
+  margin-bottom: 1.25rem;
+  font-weight: 400;
+}
+
+.card-header .entry-date {
+  margin-bottom: 0;
+}
+
+.entry-list {
+  list-style: decimal;
+  padding-left: 1.5em;
+}
+
+.entry-list li {
+  padding: 0.25rem 0;
+  color: #3a3028;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  font-weight: 400;
+}
+
+.entry-list li strong {
+  font-weight: bold;
+}
+
+.entry-list li em {
+  font-style: italic;
+}
+
+.entry-list li u {
+  text-decoration: underline;
+}
+
+.entry-list li a {
+  color: #6b5437;
+  text-decoration: underline;
+}
+
+.entry-list li a:hover {
+  color: #5a4a3a;
+}

@@ -1,0 +1,30 @@
+{
+  "name": "things-to-be-happy-about",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "convex:dev": "convex dev"
+  },
+  "dependencies": {
+    "@blocknote/core": "^0.45.0",
+    "@blocknote/mantine": "^0.45.0",
+    "@blocknote/react": "^0.45.0",
+    "@phosphor-icons/react": "^2.1.10",
+    "convex": "^1.31.2",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "^7.11.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.2",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.0"
+  }
+}

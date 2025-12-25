@@ -1,0 +1,131 @@
+/* Admin-specific card header styles */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.edit-button,
+.delete-button {
+  background: none;
+  border: none;
+  color: #8b7765;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  opacity: 0.6;
+  height: 20px;
+  line-height: 1;
+}
+
+.edit-button:hover,
+.delete-button:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.delete-button {
+  color: #dc3545;
+}
+
+.done-button {
+  background: transparent;
+  border: 1px solid rgba(139, 119, 101, 0.3);
+  color: #5a4a3a;
+  cursor: pointer;
+  padding: 0.25rem 0.75rem;
+  border-radius: 2px;
+  font-size: 0.9rem;
+  font-family: 'Libre Baskerville', serif;
+  transition: all 0.2s;
+  height: 28px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.done-button:hover {
+  border-color: rgba(139, 119, 101, 0.5);
+  background: rgba(139, 119, 101, 0.05);
+}
+
+/* Inline editor styles */
+.editor-content-inline {
+  min-height: 150px;
+  margin: 0;
+  padding: 0;
+}
+
+.editor-content-inline .bn-container {
+  background: transparent;
+  margin: 0;
+  padding: 0;
+}
+
+.editor-content-inline .bn-editor {
+  padding: 0;
+  margin: 0;
+  font-family: 'Libre Baskerville', serif;
+}
+
+.editor-content-inline .bn-block-content {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: #3a3028;
+  margin: 0;
+  padding: 0;
+}
+
+.editor-content-inline .bn-block-group {
+  margin: 0;
+  padding: 0;
+}
+
+.editor-content-inline [data-node-type="blockContainer"] {
+  margin: 0;
+  padding: 0;
+}
+
+.editor-content-inline .ProseMirror {
+  margin: 0;
+  padding: 0;
+}
+
+.editor-content-inline ol {
+  margin: 0;
+  padding-left: 1.5em;
+  list-style: decimal;
+}
+
+.editor-content-inline li {
+  padding: 0.25rem 0 !important;
+  margin: 0 !important;
+}
+
+.editor-content-inline [data-content-type="numberedListItem"] {
+  padding: 0.25rem 0 !important;
+  margin: 0 !important;
+}
+
+.editor-content-inline .bn-block[data-content-type="numberedListItem"] {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.editor-content-inline .bn-block-content[data-content-type="numberedListItem"] {
+  padding: 0.25rem 0 !important;
+  margin: 0 !important;
+}
