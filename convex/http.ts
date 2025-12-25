@@ -1,6 +1,7 @@
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
 import { api } from "./_generated/api";
+import { storeImage } from "./httpImages";
 
 const http = httpRouter();
 
@@ -92,6 +93,13 @@ ${rssItems}
       },
     });
   }),
+});
+
+// Store image endpoint
+http.route({
+  path: "/storeImage",
+  method: "POST",
+  handler: storeImage,
 });
 
 // Helper function to escape XML special characters

@@ -75,17 +75,32 @@ async function generateWeeklyCollage(weekStart: string, weekEnd: string) {
       throw new Error("No image data received from OpenAI");
     }
     
-    // Upload image to a storage service (for now, we'll use a placeholder)
-    // In production, you'd upload to Vercel Blob, AWS S3, or similar
-    // For now, let's store a smaller version or just the prompt
+    // Upload image to Convex storage via HTTP
     console.log("Image data length:", imageData.length);
     
-    // For testing, let's save just a placeholder URL instead of the full base64
-    const imageUrl = `https://via.placeholder.com/1024x1024/8B7765/FFFFFF?text=Weekly+Collage+${weekStart}`;
+    // Convert base64 to buffer
+    const imageBuffer = Buffer.from(imageData, 'base64');
     
-    // TODO: Upload actual image to storage service
-    // const buffer = Buffer.from(imageData, 'base64');
-    // Upload buffer to Vercel Blob/S3 and get URL
+    // Store the image via HTTP endpoint
+    const convexUrl = process.env.CONVEX_DEPLOYMENT || process.env.NEXT_PUBLIC_CONVEX_URL;
+    const storeUrl = `${convexUrl}/storeImage?weekStart=${weekStart}&contentType=image/png`;
+    console.log("Store URL:", storeUrl);
+    const storeResponse = await fetch(storeUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'image/png',
+      },
+      body: imageBuffer,
+    });
+    
+    if (!storeResponse.ok) {
+      throw new Error(`Failed to store image: ${storeResponse.statusText}`);
+    }
+    
+    const { imageUrl } = await storeResponse.json();
+    
+    console.log("Image stored successfully");
+    console.log("Image URL:", imageUrl);
     
     // Save to Convex database
     console.log("Saving weekly image to database...");
