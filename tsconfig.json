@@ -20,6 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "convex/_generated"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -10,4 +10,11 @@ export default defineSchema({
   })
     .index("by_date", ["date"])
     .index("by_deletedAt", ["deletedAt"]),
+  sessions: defineTable({
+    token: v.string(), // Session token
+    expiresAt: v.number(), // Expiration timestamp
+    createdAt: v.number(), // Creation timestamp
+  })
+    .index("by_token", ["token"])
+    .index("by_expiresAt", ["expiresAt"]),
 });
