@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { useNavigate } from "react-router-dom";
+import { Rss } from "@phosphor-icons/react";
 import { api } from "../convex/_generated/api";
 import { useAuth } from "./contexts/AuthContext";
 import EntryCard from "./components/EntryCard";
@@ -139,7 +140,7 @@ export default function App() {
       <header className="header">
         <h1>things to be happy about</h1>
         <div className="header-actions">
-          {isAuthenticated && (
+          {isAuthenticated ? (
             <>
               <button onClick={handleCreateNew} className="new-button">
                 + New
@@ -148,6 +149,16 @@ export default function App() {
                 Logout
               </button>
             </>
+          ) : (
+            <a
+              href="/feed"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rss-link"
+              title="Subscribe to RSS feed"
+            >
+              <Rss size={24} weight="regular" />
+            </a>
           )}
         </div>
       </header>

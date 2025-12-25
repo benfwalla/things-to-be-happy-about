@@ -129,3 +129,30 @@
   border-color: rgba(139, 119, 101, 0.5);
   background: rgba(139, 119, 101, 0.05);
 }
+
+/* BlockNote font override using data attribute */
+.bn-container[data-libre-baskerville-font] .bn-editor {
+  padding-inline: 0 !important;
+}
+
+.bn-container[data-libre-baskerville-font] .bn-editor * {
+  font-family: 'Libre Baskerville', serif !important;
+  font-size: 1.15rem !important;
+  line-height: 1.7 !important;
+}
+
+/* Remove BlockNote indentation */
+.bn-container[data-libre-baskerville-font] div[class*="block-outer"],
+.bn-container[data-libre-baskerville-font] div[class*="block-content"] {
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+}
+
+.bn-container[data-libre-baskerville-font] ol {
+  margin-left: 1.5rem !important;
+  padding-left: 0 !important;
+}
+
+.bn-container[data-libre-baskerville-font] li {
+  padding: 0.25rem 0 !important;
+}

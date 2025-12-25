@@ -75,6 +75,37 @@
   min-height: 300px;
 }
 
+/* Override BlockNote styles to match site font and remove indentation */
+.editor-content * {
+  font-family: 'Libre Baskerville', serif !important;
+}
+
+.editor-content div[class*="editor"],
+.editor-content div[class*="block"],
+.editor-content div[data-node-type] {
+  font-family: 'Libre Baskerville', serif !important;
+}
+
+/* Remove all left padding/margin from block containers */
+.editor-content div[class*="block-outer"],
+.editor-content div[class*="block-content"],
+.editor-content > div > div {
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+}
+
+/* Keep list indentation but remove extra padding */
+.editor-content div[data-node-type="numberedListItem"],
+.editor-content ol,
+.editor-content li {
+  padding-left: 0 !important;
+}
+
+.editor-content ol {
+  margin-left: 1.5rem !important;
+  padding-left: 0 !important;
+}
+
 .editor-footer {
   display: flex;
   justify-content: flex-end;

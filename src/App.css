@@ -10,6 +10,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
 }
 
 .header h1 {
@@ -23,6 +24,7 @@
 .header-actions {
   display: flex;
   gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .new-button,
@@ -36,12 +38,49 @@
   font-size: 0.9rem;
   font-family: 'Libre Baskerville', serif;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .new-button:hover,
 .logout-button:hover {
   border-color: rgba(139, 119, 101, 0.5);
   background: rgba(139, 119, 101, 0.05);
+}
+
+.rss-link {
+  color: #5a4a3a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 2px;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.rss-link:hover {
+  background: rgba(139, 119, 101, 0.1);
+  color: #3a2a1a;
+}
+
+/* Mobile responsive header */
+@media (max-width: 640px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 2rem 1.5rem 1.5rem 1.5rem;
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+    text-align: right;
+    width: 100%;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }
 
 .entries-container {

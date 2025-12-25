@@ -35,6 +35,16 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
   const [editDate, setEditDate] = useState(entry.date);
   const addEntry = useMutation(api.entries.addEntry);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const wasNewEntryRef = useRef(isNewEntry);
+
+  // Keep edit mode open if this started as a new entry, even after first save
+  useEffect(() => {
+    if (wasNewEntryRef.current && !isEditing) {
+      // Entry was created as new but user hasn't clicked Done yet
+      // Keep it in edit mode
+      setIsEditing(true);
+    }
+  }, [entry._id]);
   const formatDate = (dateString: string) => {
     // Create date at noon to avoid timezone issues
     const [year, month, day] = dateString.split('-').map(Number);
@@ -132,7 +142,7 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
     return text;
   };
 
-  // Auto-save on editor change
+  // Auto-save on editor change (doesn't close edit mode)
   const handleSave = async () => {
     const blocks = editor.document;
     const things = extractThingsFromBlocks(blocks);
@@ -140,14 +150,17 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
     if (things.length > 0) {
       try {
         await addEntry({ date: editDate, things });
+        // Don't close edit mode on auto-save
       } catch (error) {
         console.error("Error saving entry:", error);
       }
     }
   };
 
-  // Debounced save
+  // Debounced save - only triggers on change while editing
   const handleChange = () => {
+    if (!isEditing) return; // Don't save if not in edit mode
+
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
     }
@@ -197,7 +210,7 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
                     <Trash size={20} weight="regular" />
                   </button>
                 )}
-                <button onClick={() => { setIsEditing(false); handleSave(); }} className="done-button" title="Done">
+                <button onClick={() => { wasNewEntryRef.current = false; setIsEditing(false); handleSave(); }} className="done-button" title="Done">
                   Done
                 </button>
               </>
@@ -211,7 +224,9 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
             editor={editor}
             theme="light"
             formattingToolbar={true}
+            sideMenu={false}
             onChange={handleChange}
+            data-libre-baskerville-font
           />
         </div>
       ) : (
