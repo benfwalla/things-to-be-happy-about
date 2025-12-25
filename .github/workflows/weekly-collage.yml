@@ -46,7 +46,7 @@ jobs:
           
       - name: Generate weekly collage
         run: |
-          bun run scripts/generate-weekly-collage.ts "$WEEK_START" "$WEEK_END"
+          bun run scripts/generate-weekly-collage.ts "${{ steps.dates.outputs.week_start }}" "${{ steps.dates.outputs.week_end }}"
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           CONVEX_DEPLOYMENT: ${{ secrets.CONVEX_DEPLOYMENT }}
