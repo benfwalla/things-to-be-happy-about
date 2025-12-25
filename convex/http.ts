@@ -37,13 +37,22 @@ http.route({
           </ul>
         `.trim();
 
-        // Parse date and create RFC-822 formatted date
+        // Parse date and create RFC-822 formatted date for RSS
         const dateObj = new Date(entry.date + "T12:00:00Z"); // Noon UTC to avoid timezone issues
         const pubDate = dateObj.toUTCString();
 
+        // Format date for title like "Wed, Dec 25, 2025"
+        const titleDate = dateObj.toLocaleDateString("en-US", {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          timeZone: "UTC",
+        });
+
         return `
     <item>
-      <title>${escapeXml(entry.date)} - things to be happy about</title>
+      <title>${escapeXml(titleDate)} - things to be happy about</title>
       <link>${escapeXml(entryUrl)}</link>
       <guid isPermaLink="true">${escapeXml(entryUrl)}</guid>
       <pubDate>${pubDate}</pubDate>
