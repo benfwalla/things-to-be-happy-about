@@ -36,12 +36,15 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
   const addEntry = useMutation(api.entries.addEntry);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
+    // Parse as UTC to avoid timezone shifts
+    const [year, month, day] = dateString.split('-').map(Number);
+    const date = new Date(Date.UTC(year, month - 1, day));
     return date.toLocaleDateString("en-US", {
       weekday: "short",
       year: "numeric",
       month: "short",
       day: "numeric",
+      timeZone: 'UTC'
     });
   };
 

@@ -19,9 +19,13 @@ export default function App() {
     paginationOpts: { numItems: 20, cursor },
   });
 
-  // Get today's date in YYYY-MM-DD format
+  // Get today's date in YYYY-MM-DD format (UTC)
   const todayDate = useMemo(() => {
-    return new Date().toISOString().split("T")[0];
+    const now = new Date();
+    const year = now.getUTCFullYear();
+    const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(now.getUTCDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }, []);
 
   // Accumulate entries as we paginate
@@ -56,12 +60,27 @@ export default function App() {
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
-    if (!loadMoreRef.current || result?.isDone) return;
+    console.log('Observer setup:', {
+      hasLoadMoreRef: !!loadMoreRef.current,
+      isDone: result?.isDone,
+      continueCursor: result?.continueCursor,
+      isLoadingMore,
+      entriesLength: allEntries.length
+    });
+    
+    if (!loadMoreRef.current || result?.isDone || isLoadingMore) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         const target = entries[0];
-        if (target.isIntersecting && result?.continueCursor && !isLoadingMore) {
+        console.log('Intersection:', {
+          isIntersecting: target.isIntersecting,
+          continueCursor: result?.continueCursor,
+          isLoadingMore
+        });
+        
+        if (target.isIntersecting && result?.continueCursor !== null && result?.continueCursor !== undefined && !isLoadingMore) {
+          console.log('Loading more entries...');
           setIsLoadingMore(true);
           setCursor(result.continueCursor);
         }
@@ -78,7 +97,7 @@ export default function App() {
     return () => {
       observer.disconnect();
     };
-  }, [result?.continueCursor, result?.isDone, isLoadingMore]);
+  }, [result?.continueCursor, result?.isDone, isLoadingMore, allEntries.length]);
 
   const handleLogout = async () => {
     await logout();
