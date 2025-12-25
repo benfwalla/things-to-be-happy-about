@@ -38,6 +38,7 @@ async function generateWeeklyCollage(weekStart: string, weekEnd: string) {
   
   try {
     // Generate image using the latest OpenAI API
+    console.log("Calling OpenAI API...");
     const response = await openai.images.generate({
       model: "gpt-image-1.5",
       prompt: fullPrompt,
@@ -46,17 +47,30 @@ async function generateWeeklyCollage(weekStart: string, weekEnd: string) {
       quality: "high",
     });
     
+    console.log("OpenAI API response received");
     const imageData = response.data?.[0]?.b64_json;
     if (!imageData) {
-      throw new Error("No image data received");
+      console.error("OpenAI response:", JSON.stringify(response, null, 2));
+      throw new Error("No image data received from OpenAI");
     }
     
     // Upload image to a storage service (for now, we'll use a placeholder)
     // In production, you'd upload to Vercel Blob, AWS S3, or similar
-    const imageUrl = `data:image/png;base64,${imageData}`;
+    // For now, let's store a smaller version or just the prompt
+    console.log("Image data length:", imageData.length);
+    
+    // For testing, let's save just a placeholder URL instead of the full base64
+    const imageUrl = `https://via.placeholder.com/1024x1024/8B7765/FFFFFF?text=Weekly+Collage+${weekStart}`;
+    
+    // TODO: Upload actual image to storage service
+    // const buffer = Buffer.from(imageData, 'base64');
+    // Upload buffer to Vercel Blob/S3 and get URL
     
     // Save to Convex database
     console.log("Saving weekly image to database...");
+    console.log("Week start:", weekStart);
+    console.log("Image URL length:", imageUrl.length);
+    
     await convex.mutation(api.weeklyImages.saveWeeklyImage, {
       weekStart,
       imageUrl,
@@ -69,6 +83,10 @@ async function generateWeeklyCollage(weekStart: string, weekEnd: string) {
     
   } catch (error) {
     console.error("Error generating image:", error);
+    if (error instanceof Error) {
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+    }
     throw error;
   }
 }
