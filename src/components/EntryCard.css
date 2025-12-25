@@ -12,7 +12,7 @@
 
 .entry-date {
   font-size: 1.1rem;
-  color: #8b7765;
+  color: #5a4a3a;
   margin-bottom: 1.25rem;
   font-weight: 400;
 }
@@ -23,7 +23,7 @@
 
 .date-input {
   font-size: 1.1rem;
-  color: #8b7765;
+  color: #5a4a3a;
   font-weight: 400;
   background: transparent;
   border: 1px solid rgba(139, 119, 101, 0.3);
