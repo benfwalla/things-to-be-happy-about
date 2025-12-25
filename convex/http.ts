@@ -17,9 +17,25 @@ http.route({
       },
     });
 
-    // Site metadata - update these with your actual site details
-    const siteUrl = new URL(request.url).origin;
-    const feedUrl = `${siteUrl}/feed`;
+    // Determine the actual site URL, accounting for proxies/rewrites
+    // Check for forwarded host headers from Vercel
+    const forwardedHost = request.headers.get("x-forwarded-host");
+    const forwardedProto = request.headers.get("x-forwarded-proto") || "https";
+
+    let siteUrl: string;
+    let feedUrl: string;
+
+    if (forwardedHost) {
+      // Request came through Vercel proxy
+      siteUrl = `${forwardedProto}://${forwardedHost}`;
+      feedUrl = `${siteUrl}/feed`;
+    } else {
+      // Direct request to Convex
+      const url = new URL(request.url);
+      siteUrl = url.origin;
+      feedUrl = `${siteUrl}/feed`;
+    }
+
     const siteTitle = "Things to be Happy About";
     const siteDescription =
       "A daily journal of things to be happy about - capturing life's joyful moments, one day at a time.";
