@@ -165,7 +165,7 @@ export default function App() {
       <div className="entries-container">
         {allEntries.map((entry) => (
           <EntryCard
-            key={entry._id}
+            key={entry.date}
             entry={entry}
             onDelete={isAuthenticated ? handleDelete : undefined}
             isNewEntry={entry._id === "temp-today" || entry._id.startsWith("temp-new-")}
