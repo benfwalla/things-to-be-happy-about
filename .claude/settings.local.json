@@ -19,7 +19,8 @@
       "Bash(CONVEX_DEPLOYMENT=prod:nautical-vulture-879 npx convex import:*)",
       "Bash(CONVEX_DEPLOYMENT=prod:nautical-vulture-879 npx convex run:*)",
       "Bash(cd:*)",
-      "Bash(bun remove @vercel/node)"
+      "Bash(bun remove @vercel/node)",
+      "Bash(CONVEX_DEPLOYMENT=prod:nautical-vulture-879 npx convex deploy --yes)"
     ]
   }
 }

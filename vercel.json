@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/feed",
-      "destination": "https://hardy-mule-551.convex.site/feed"
+      "destination": "https://nautical-vulture-879.convex.site/feed"
     },
     {
       "source": "/(.*)",

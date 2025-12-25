@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/feed': {
-        target: 'https://hardy-mule-551.convex.site',
+        target: 'https://nautical-vulture-879.convex.site',
         changeOrigin: true,
         rewrite: (path) => path,
       },
