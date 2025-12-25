@@ -17,4 +17,12 @@ export default defineSchema({
   })
     .index("by_token", ["token"])
     .index("by_expiresAt", ["expiresAt"]),
+  weeklyImages: defineTable({
+    weekStart: v.string(), // ISO date string (Monday of that week)
+    imageUrl: v.string(), // URL to generated image
+    prompt: v.string(), // The prompt used for generation
+    thingCount: v.number(), // How many things were included
+    createdAt: v.number(),
+  })
+    .index("by_weekStart", ["weekStart"]),
 });

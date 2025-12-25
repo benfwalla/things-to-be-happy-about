@@ -1,0 +1,55 @@
+name: Generate Weekly Collage
+
+on:
+  schedule:
+    # Run every Sunday at 8pm UTC (1pm PST, 4pm EST)
+    - cron: '0 20 * * 0'
+  workflow_dispatch:
+    inputs:
+      week_start:
+        description: 'Week start date (YYYY-MM-DD, Monday)'
+        required: false
+        type: string
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+          
+      - name: Install dependencies
+        run: bun install
+        
+      - name: Get week dates
+        id: dates
+        run: |
+          if [ -n "${{ github.event.inputs.week_start }}" ]; then
+            WEEK_START="${{ github.event.inputs.week_start }}"
+          else
+            # Get last week's Monday
+            WEEK_START=$(date -d "last monday" +%Y-%m-%d)
+          fi
+          # Get that Sunday (end of week)
+          WEEK_END=$(date -d "$WEEK_START + 6 days" +%Y-%m-%d)
+          echo "week_start=$WEEK_START" >> $GITHUB_OUTPUT
+          echo "week_end=$WEEK_END" >> $GITHUB_OUTPUT
+          echo "Generating collage for week $WEEK_START to $WEEK_END"
+          
+      - name: Generate weekly collage
+        run: |
+          bun run scripts/generate-weekly-collage.ts "$WEEK_START" "$WEEK_END"
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          CONVEX_DEPLOYMENT: ${{ secrets.CONVEX_DEPLOYMENT }}
+          CONVEX_ACCESS_TOKEN: ${{ secrets.CONVEX_ACCESS_TOKEN }}
+          NEXT_PUBLIC_CONVEX_URL: ${{ secrets.NEXT_PUBLIC_CONVEX_URL }}
+        working-directory: ${{ github.workspace }}
