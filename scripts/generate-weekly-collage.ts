@@ -3,14 +3,31 @@ import OpenAI from "openai";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../convex/_generated/api.js";
 
+// Don't load .env.local - rely on environment variables passed in
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+// Verify required environment variables
+const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || process.env.CONVEX_DEPLOYMENT;
+if (!convexUrl) {
+  console.error("Error: NEXT_PUBLIC_CONVEX_URL or CONVEX_DEPLOYMENT must be set");
+  process.exit(1);
+}
+
+// Handle special Convex URL formats
+let finalConvexUrl = convexUrl;
+if (convexUrl.startsWith("dev:") || convexUrl.startsWith("prod:")) {
+  // Convert dev:xxx to https://xxx.convex.cloud
+  const deploymentName = convexUrl.split(":")[1];
+  finalConvexUrl = `https://${deploymentName}.convex.cloud`;
+}
+
+const convex = new ConvexHttpClient(finalConvexUrl);
 
 // Verify Convex connection
-console.log("Convex URL:", process.env.NEXT_PUBLIC_CONVEX_URL);
+console.log("Original Convex URL:", convexUrl);
+console.log("Final Convex URL:", finalConvexUrl);
 console.log("Convex Deployment:", process.env.CONVEX_DEPLOYMENT);
 
 async function generateWeeklyCollage(weekStart: string, weekEnd: string) {
