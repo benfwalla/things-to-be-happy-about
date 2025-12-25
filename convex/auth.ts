@@ -98,11 +98,30 @@ export const checkAuth = query({
 
     // Check if session has expired
     if (Date.now() > session.expiresAt) {
-      const db = ctx.db as any;
-      await db.delete(session._id);
+      // Just return false - queries cannot delete
+      // Expired sessions will be cleaned up by a separate function
       return { authenticated: false };
     }
 
     return { authenticated: true, expiresAt: session.expiresAt };
+  },
+});
+
+// Clean up expired sessions (can be called periodically)
+export const cleanupExpiredSessions = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const now = Date.now();
+    const expiredSessions = await ctx.db
+      .query("sessions")
+      .withIndex("by_expiresAt", (q) => q.lt("expiresAt", now))
+      .collect();
+
+    for (const session of expiredSessions) {
+      const db = ctx.db as any;
+      await db.delete(session._id);
+    }
+
+    return { deleted: expiredSessions.length };
   },
 });
