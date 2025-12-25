@@ -14,7 +14,10 @@
       "Bash(git init:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(vercel:*)"
+      "Bash(vercel:*)",
+      "Bash(unzip:*)",
+      "Bash(CONVEX_DEPLOYMENT=prod:nautical-vulture-879 npx convex import:*)",
+      "Bash(CONVEX_DEPLOYMENT=prod:nautical-vulture-879 npx convex run:*)"
     ]
   }
 }

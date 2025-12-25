@@ -11,8 +11,7 @@ export default function AdminPage() {
   const [allEntries, setAllEntries] = useState<any[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [manualNewEntries, setManualNewEntries] = useState<any[]>([]);
-
+  
   const { logout } = useAuth();
   const navigate = useNavigate();
   const deleteEntry = useMutation(api.entries.deleteEntry);
@@ -75,7 +74,6 @@ export default function AdminPage() {
     if (id === "temp-today" || id.startsWith("temp-new-")) {
       // Just remove the placeholder or manually created entry
       setAllEntries((prev) => prev.filter((e) => e._id !== id));
-      setManualNewEntries((prev) => prev.filter((e) => e._id !== id));
       return;
     }
 
@@ -91,7 +89,6 @@ export default function AdminPage() {
       date: todayDate,
       things: [],
     };
-    setManualNewEntries((prev) => [...prev, newEntry]);
     setAllEntries((prev) => [newEntry, ...prev]);
   };
 
