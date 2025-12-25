@@ -9,6 +9,7 @@
  */
 
 import type * as auth from "../auth.js";
+import type * as clearDev from "../clearDev.js";
 import type * as entries from "../entries.js";
 import type * as http from "../http.js";
 import type * as httpImages from "../httpImages.js";
@@ -23,6 +24,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  clearDev: typeof clearDev;
   entries: typeof entries;
   http: typeof http;
   httpImages: typeof httpImages;

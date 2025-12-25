@@ -33,6 +33,11 @@ async function generateWeeklyCollage(weekStart: string, weekEnd: string) {
   const allThings = entries.flatMap((entry: any) => entry.things);
   console.log(`Found ${allThings.length} things to be happy about`);
   
+  if (allThings.length === 0) {
+    console.log("No things to be happy about found in entries. Skipping collage generation.");
+    return;
+  }
+  
   const basePrompt = "Create a large-scale mural painting in the style of Midwestern town building murals. The artwork should span horizontally like a wraparound mural on a brick building, featuring interconnected scenes of everyday joy and community life. Use a warm, nostalgic palette with soft blues, warm yellows, and earth tones. The style should be reminiscent of regional American muralists like Thomas Hart Benton, with flowing lines and slightly exaggerated, heartfelt perspectives. Each element should blend into the next, creating a continuous narrative of happiness and small moments that make life meaningful.";
   
   const thingsList = allThings.slice(0, 50).join(", ");

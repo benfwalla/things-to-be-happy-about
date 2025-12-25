@@ -1,9 +1,9 @@
 name: Generate Weekly Collage
 
 on:
-  schedule:
-    # Run every Sunday at 8pm UTC (1pm PST, 4pm EST)
-    - cron: '0 20 * * 0'
+  # schedule:
+  #   - cron: '0 20 * * 0' # Sundays 8 PM UTC
+  # Schedule disabled - can be re-enabled later if needed
   workflow_dispatch:
     inputs:
       week_start:
