@@ -71,3 +71,61 @@
 .entry-list li a:hover {
   color: #5a4a3a;
 }
+
+/* Admin-specific card header styles */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.edit-button,
+.delete-button {
+  background: none;
+  border: none;
+  color: #8b7765;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  opacity: 0.6;
+  height: 20px;
+  line-height: 1;
+}
+
+.edit-button:hover,
+.delete-button:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.delete-button {
+  color: #dc3545;
+}
+
+.done-button {
+  background: transparent;
+  border: 1px solid rgba(139, 119, 101, 0.3);
+  color: #5a4a3a;
+  cursor: pointer;
+  padding: 0.25rem 0.75rem;
+  border-radius: 2px;
+  font-size: 0.9rem;
+  font-family: 'Libre Baskerville', serif;
+  transition: all 0.2s;
+}
+
+.done-button:hover {
+  border-color: rgba(139, 119, 101, 0.5);
+  background: rgba(139, 119, 101, 0.05);
+}

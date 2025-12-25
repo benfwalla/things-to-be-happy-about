@@ -16,13 +16,10 @@ export const getEntries = query({
       .query("entries")
       .withIndex("by_date")
       .order("desc")
+      .filter((q) => q.eq(q.field("deletedAt"), undefined))
       .paginate(args.paginationOpts ?? { numItems: 10, cursor: null });
 
-    // Filter out soft-deleted entries
-    return {
-      ...result,
-      page: result.page.filter(entry => !entry.deletedAt),
-    };
+    return result;
   },
 });
 

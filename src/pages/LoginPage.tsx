@@ -17,7 +17,7 @@ export default function LoginPage() {
     
     const success = await login(password);
     if (success) {
-      navigate("/admin");
+      navigate("/");
     } else {
       setError("Incorrect password");
       setPassword("");

@@ -1,19 +1,28 @@
-import { useState, useEffect } from "react";
-import { useQuery } from "convex/react";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { useQuery, useMutation } from "convex/react";
+import { useNavigate } from "react-router-dom";
 import { api } from "../convex/_generated/api";
+import { useAuth } from "./contexts/AuthContext";
 import EntryCard from "./components/EntryCard";
-import AdminPanel from "./components/AdminPanel";
 import "./App.css";
 
-function App() {
-  const [showAdmin, setShowAdmin] = useState(false);
+export default function App() {
+  const { isAuthenticated, isLoading, logout } = useAuth();
+  const navigate = useNavigate();
   const [allEntries, setAllEntries] = useState<any[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+  const deleteEntry = useMutation(api.entries.deleteEntry);
 
   const result = useQuery(api.entries.getEntries, {
     paginationOpts: { numItems: 20, cursor },
   });
+
+  // Get today's date in YYYY-MM-DD format
+  const todayDate = useMemo(() => {
+    return new Date().toISOString().split("T")[0];
+  }, []);
 
   // Accumulate entries as we paginate
   useEffect(() => {
@@ -21,7 +30,20 @@ function App() {
       setAllEntries((prev) => {
         // If cursor is null, we're starting fresh
         if (cursor === null) {
-          return result.page;
+          const entries = result.page;
+          // Check if today's entry exists in the fetched data
+          const todayExists = entries.some((entry) => entry.date === todayDate);
+
+          // If today's entry doesn't exist and user is authenticated, add a placeholder at the beginning
+          if (!todayExists && isAuthenticated) {
+            const placeholderEntry = {
+              _id: "temp-today",
+              date: todayDate,
+              things: [],
+            };
+            return [placeholderEntry, ...entries];
+          }
+          return entries;
         }
         // Otherwise, append new entries
         const existingIds = new Set(prev.map((e) => e._id));
@@ -30,45 +52,102 @@ function App() {
       });
       setIsLoadingMore(false);
     }
-  }, [result, cursor]);
+  }, [result, cursor, todayDate, isAuthenticated]);
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
-    const bottom = scrollHeight - scrollTop <= clientHeight + 100;
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    if (!loadMoreRef.current || result?.isDone) return;
 
-    if (bottom && result?.continueCursor && !isLoadingMore) {
-      setIsLoadingMore(true);
-      setCursor(result.continueCursor);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0];
+        if (target.isIntersecting && result?.continueCursor && !isLoadingMore) {
+          setIsLoadingMore(true);
+          setCursor(result.continueCursor);
+        }
+      },
+      {
+        root: null,
+        rootMargin: '100px',
+        threshold: 0.1
+      }
+    );
+
+    observer.observe(loadMoreRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [result?.continueCursor, result?.isDone, isLoadingMore]);
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
+
+  const handleDelete = async (id: string) => {
+    if (id === "temp-today" || id.startsWith("temp-new-")) {
+      // Just remove the placeholder or manually created entry
+      setAllEntries((prev) => prev.filter((e) => e._id !== id));
+      return;
+    }
+
+    if (confirm("Are you sure you want to delete this entry?")) {
+      await deleteEntry({ id: id as any });
+      setAllEntries((prev) => prev.filter((e) => e._id !== id));
     }
   };
+
+  const handleCreateNew = () => {
+    const newEntry = {
+      _id: `temp-new-${Date.now()}`,
+      date: todayDate,
+      things: [],
+    };
+    setAllEntries((prev) => [newEntry, ...prev]);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="app">
+        <div className="loading">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="app">
       <header className="header">
         <h1>things to be happy about</h1>
-        <button
-          className="admin-toggle"
-          onClick={() => setShowAdmin(!showAdmin)}
-        >
-          {showAdmin ? "View Entries" : "Add Entry"}
-        </button>
-      </header>
-
-      {showAdmin ? (
-        <AdminPanel onClose={() => setShowAdmin(false)} />
-      ) : (
-        <div className="entries-container" onScroll={handleScroll}>
-          {allEntries.map((entry) => (
-            <EntryCard key={entry._id} entry={entry} />
-          ))}
-          {result?.isDone && allEntries.length > 0 && (
-            <div className="loading">The beginning of happiness...</div>
+        <div className="header-actions">
+          {isAuthenticated && (
+            <>
+              <button onClick={handleCreateNew} className="new-button">
+                + New
+              </button>
+              <button onClick={handleLogout} className="logout-button">
+                Logout
+              </button>
+            </>
           )}
-          {!result && <div className="loading">Loading...</div>}
         </div>
-      )}
+      </header>
+      <div className="entries-container">
+        {allEntries.map((entry) => (
+          <EntryCard
+            key={entry._id}
+            entry={entry}
+            onDelete={isAuthenticated ? handleDelete : undefined}
+            isNewEntry={entry._id === "temp-today" || entry._id.startsWith("temp-new-")}
+            isAuthenticated={isAuthenticated}
+          />
+        ))}
+        {!result?.isDone && <div ref={loadMoreRef} style={{ height: '20px' }} />}
+        {result?.isDone && allEntries.length > 0 && (
+          <div className="loading">The beginning of happiness...</div>
+        )}
+        {!result && <div className="loading">Loading...</div>}
+      </div>
     </div>
   );
 }
-
-export default App;
