@@ -21,6 +21,23 @@
   margin-bottom: 0;
 }
 
+.date-input {
+  font-size: 1.1rem;
+  color: #8b7765;
+  font-weight: 400;
+  background: transparent;
+  border: 1px solid rgba(139, 119, 101, 0.3);
+  border-radius: 2px;
+  padding: 0.25rem 0.5rem;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: rgba(139, 119, 101, 0.5);
+}
+
 .entry-list {
   list-style: decimal;
   padding-left: 1.5em;

@@ -32,6 +32,7 @@ interface AdminEntryCardProps {
 
 function AdminEntryCard({ entry, onDelete, isNewEntry = false }: AdminEntryCardProps) {
   const [isEditing, setIsEditing] = useState(isNewEntry);
+  const [editDate, setEditDate] = useState(entry.date);
   const addEntry = useMutation(api.entries.addEntry);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -153,7 +154,7 @@ function AdminEntryCard({ entry, onDelete, isNewEntry = false }: AdminEntryCardP
         // Only save if there's at least one item
         if (things.length > 0) {
           try {
-            await addEntry({ date: entry.date, things });
+            await addEntry({ date: editDate, things });
           } catch (error) {
             console.error("Error auto-saving entry:", error);
           }
@@ -163,7 +164,7 @@ function AdminEntryCard({ entry, onDelete, isNewEntry = false }: AdminEntryCardP
 
     // Subscribe to editor changes
     return editor.onChange(handleChange);
-  }, [isEditing, editor, entry.date, addEntry]);
+  }, [isEditing, editor, editDate, addEntry]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -177,7 +178,18 @@ function AdminEntryCard({ entry, onDelete, isNewEntry = false }: AdminEntryCardP
   return (
     <div className="admin-entry-card">
       <div className="card-header">
-        <div className="entry-date">{formatDate(entry.date)}</div>
+        <div className="entry-date">
+          {isEditing ? (
+            <input
+              type="date"
+              value={editDate}
+              onChange={(e) => setEditDate(e.target.value)}
+              className="date-input"
+            />
+          ) : (
+            formatDate(entry.date)
+          )}
+        </div>
         <div className="card-actions">
           {!isEditing && (
             <button onClick={() => setIsEditing(true)} className="edit-button" title="Edit">
