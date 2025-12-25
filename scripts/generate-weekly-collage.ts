@@ -44,7 +44,6 @@ async function generateWeeklyCollage(weekStart: string, weekEnd: string) {
       n: 1,
       size: "1024x1024",
       quality: "high",
-      response_format: "b64_json",
     });
     
     const imageData = response.data?.[0]?.b64_json;
