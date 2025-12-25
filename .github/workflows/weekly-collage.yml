@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       week_start:
-        description: 'Week start date (YYYY-MM-DD, Monday)'
+        description: 'Week start date (YYYY-MM-DD)'
         required: false
         type: string
 
