@@ -55,7 +55,6 @@ export const login = mutation({
     await ctx.db.insert("sessions", {
       token,
       expiresAt,
-      createdAt: now,
     });
 
     return { token, expiresAt };

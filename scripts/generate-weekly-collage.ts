@@ -33,10 +33,10 @@ async function generateWeeklyCollage(weekStart: string, weekEnd: string) {
   const allThings = entries.flatMap((entry: any) => entry.things);
   console.log(`Found ${allThings.length} things to be happy about`);
   
-  const basePrompt = "Create a peaceful, nostalgic collage that represents these moments of joy and happiness. The image should have a dreamy, gentle quality with soft colors and a warm, comforting atmosphere. Style: artistic collage with mixed media elements, incorporating subtle textures and a sentimental feel. The overall mood should be serene and contemplative.";
+  const basePrompt = "Create a large-scale mural painting in the style of Midwestern town building murals. The artwork should span horizontally like a wraparound mural on a brick building, featuring interconnected scenes of everyday joy and community life. Use a warm, nostalgic palette with soft blues, warm yellows, and earth tones. The style should be reminiscent of regional American muralists like Thomas Hart Benton, with flowing lines and slightly exaggerated, heartfelt perspectives. Each element should blend into the next, creating a continuous narrative of happiness and small moments that make life meaningful.";
   
   const thingsList = allThings.slice(0, 50).join(", ");
-  const fullPrompt = `${basePrompt}\n\nElements to include: ${thingsList}`;
+  const fullPrompt = `${basePrompt}\n\nMural scenes to incorporate: ${thingsList}`;
   
   console.log("Generating image...");
   
@@ -45,7 +45,7 @@ async function generateWeeklyCollage(weekStart: string, weekEnd: string) {
       model: "gpt-image-1.5",
       prompt: fullPrompt,
       n: 1,
-      size: "1024x1024",
+      size: "1536x1024",
       quality: "high",
     });
     

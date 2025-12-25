@@ -16,8 +16,8 @@ The app automatically generates weekly collages every Sunday at 8pm UTC via GitH
 ### How it works:
 
 1. **Fetches entries** for the past week
-2. **Creates a prompt** with up to 50 things to be happy about
-3. **Generates an image** using OpenAI's `gpt-image-1` model
+2. **Creates a mural-style prompt** with up to 50 things to be happy about, styled as a Midwestern building mural
+3. **Generates a landscape image** using OpenAI's `gpt-image-1.5` model (1536x1024)
 4. **Stores the image** in Convex file storage
 5. **Saves metadata** to the `weeklyImages` table
 
@@ -52,9 +52,9 @@ Required for the script to work:
 The script uses OpenAI's Image API with the following parameters:
 
 - **Model**: `gpt-image-1.5` (latest model with superior quality)
-- **Size**: `1024x1024`
+- **Size**: `1536x1024` (landscape format for mural-style images)
 - **Quality**: `high`
-- **Format**: Base64 JSON (returned directly by the API)
+- **Style**: Midwestern building murals with interconnected scenes
 
 ## File Storage
 

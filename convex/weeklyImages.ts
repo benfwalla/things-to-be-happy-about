@@ -26,10 +26,7 @@ export const saveWeeklyImage = mutation({
       return existing._id;
     } else {
       // Create new
-      return await ctx.db.insert("weeklyImages", {
-        ...args,
-        createdAt: Date.now(),
-      });
+      return await ctx.db.insert("weeklyImages", args);
     }
   },
 });
