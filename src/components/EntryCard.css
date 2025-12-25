@@ -44,10 +44,10 @@
 }
 
 .entry-list li {
-  padding: 0.25rem 0;
+  padding: 0.5rem 0;
   color: #3a3028;
   font-size: 1.15rem;
-  line-height: 1.7;
+  line-height: 1.5;
   font-weight: 400;
 }
 
