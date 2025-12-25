@@ -8,7 +8,7 @@ const http = httpRouter();
 http.route({
   path: "/feed",
   method: "GET",
-  handler: httpAction(async (ctx, request) => {
+  handler: httpAction(async (ctx) => {
     // Fetch all entries (limit to recent 100 for performance)
     const entries = await ctx.runQuery(api.entries.getEntries, {
       paginationOpts: {
@@ -17,25 +17,9 @@ http.route({
       },
     });
 
-    // Determine the actual site URL, accounting for proxies/rewrites
-    // Check for forwarded host headers from Vercel
-    const forwardedHost = request.headers.get("x-forwarded-host");
-    const forwardedProto = request.headers.get("x-forwarded-proto") || "https";
-
-    let siteUrl: string;
-    let feedUrl: string;
-
-    if (forwardedHost) {
-      // Request came through Vercel proxy
-      siteUrl = `${forwardedProto}://${forwardedHost}`;
-      feedUrl = `${siteUrl}/feed`;
-    } else {
-      // Direct request to Convex
-      const url = new URL(request.url);
-      siteUrl = url.origin;
-      feedUrl = `${siteUrl}/feed`;
-    }
-
+    // Use your actual public domain
+    const siteUrl = "https://things.ben-mini.com";
+    const feedUrl = `${siteUrl}/feed`;
     const siteTitle = "things to be happy about";
     const siteDescription =
       "5 Things to be Happy About, ideally on the daily.";
@@ -43,8 +27,8 @@ http.route({
     // Build RSS feed
     const rssItems = entries.page
       .map((entry) => {
-        // Create a unique URL for each entry
-        const entryUrl = `${siteUrl}/?date=${entry.date}`;
+        // Link to the main page - no individual post pages
+        const entryUrl = siteUrl;
 
         // Create HTML content from the things array
         const contentHtml = `
