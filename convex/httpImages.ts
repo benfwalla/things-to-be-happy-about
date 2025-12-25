@@ -34,6 +34,8 @@ export const storeImage = httpAction(async (ctx, request) => {
     const result = await ctx.runAction(api.storeImage.storeImageAction, {
       weekStart,
       imageData: base64,
+      prompt: `Uploaded image for week ${weekStart}`,
+      thingCount: 0,
     });
     
     return new Response(JSON.stringify(result), {

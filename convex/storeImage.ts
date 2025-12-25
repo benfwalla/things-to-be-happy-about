@@ -9,10 +9,12 @@ export const storeImageAction = action({
   args: {
     weekStart: v.string(),
     imageData: v.string(), // base64 encoded image
+    prompt: v.string(), // The prompt used for generation
+    thingCount: v.number(), // How many things were included
   },
   handler: async (ctx, args) => {
-    // Convert base64 to bytes
-    const imageBytes = Uint8Array.from(atob(args.imageData), c => c.charCodeAt(0));
+    // Convert base64 to bytes using Buffer (Node.js environment)
+    const imageBytes = Buffer.from(args.imageData, "base64");
     
     // Store in Convex storage
     const storageId = await ctx.storage.store(new Blob([imageBytes], { type: 'image/png' }));
@@ -28,8 +30,8 @@ export const storeImageAction = action({
     await ctx.runMutation(api.weeklyImages.saveWeeklyImage, {
       weekStart: args.weekStart,
       imageUrl: url,
-      prompt: `Generated weekly collage for ${args.weekStart}`,
-      thingCount: 0,
+      prompt: args.prompt,
+      thingCount: args.thingCount,
     });
     
     return { storageId, url };
