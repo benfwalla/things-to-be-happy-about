@@ -9,6 +9,10 @@ const openai = new OpenAI({
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
+// Verify Convex connection
+console.log("Convex URL:", process.env.NEXT_PUBLIC_CONVEX_URL);
+console.log("Convex Deployment:", process.env.CONVEX_DEPLOYMENT);
+
 async function generateWeeklyCollage(weekStart: string, weekEnd: string) {
   console.log(`Fetching entries for week ${weekStart} to ${weekEnd}`);
   
@@ -70,13 +74,26 @@ async function generateWeeklyCollage(weekStart: string, weekEnd: string) {
     console.log("Saving weekly image to database...");
     console.log("Week start:", weekStart);
     console.log("Image URL length:", imageUrl.length);
+    console.log("Prompt length:", fullPrompt.length);
+    console.log("Thing count:", allThings.length);
     
-    await convex.mutation(api.weeklyImages.saveWeeklyImage, {
-      weekStart,
-      imageUrl,
-      prompt: fullPrompt,
-      thingCount: allThings.length,
-    });
+    try {
+      const result = await convex.mutation(api.weeklyImages.saveWeeklyImage, {
+        weekStart,
+        imageUrl,
+        prompt: fullPrompt,
+        thingCount: allThings.length,
+      });
+      console.log("Save successful, ID:", result);
+    } catch (convexError) {
+      console.error("Convex mutation failed:");
+      console.error("Error:", convexError);
+      if (convexError instanceof Error) {
+        console.error("Error message:", convexError.message);
+        console.error("Error stack:", convexError.stack);
+      }
+      throw convexError;
+    }
     
     console.log(`Successfully generated and saved weekly collage for ${weekStart}`);
     console.log(`Included ${allThings.length} things from ${entries.length} entries`);
