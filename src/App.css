@@ -14,11 +14,17 @@
 }
 
 .header h1 {
+  margin: 0;
   font-size: 2rem;
-  font-weight: 400;
+  font-weight: 300;
   color: #5a4a3a;
   text-transform: lowercase;
   letter-spacing: 0.5px;
+}
+
+.title-link {
+  color: inherit;
+  text-decoration: none;
 }
 
 .header-actions {

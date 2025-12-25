@@ -138,7 +138,11 @@ export default function App() {
   return (
     <div className="app">
       <header className="header">
-        <h1>things to be happy about</h1>
+        <h1>
+          <a href="/" className="title-link">
+            things to be happy about
+          </a>
+        </h1>
         <div className="header-actions">
           {isAuthenticated ? (
             <>
