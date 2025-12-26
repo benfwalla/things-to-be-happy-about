@@ -210,7 +210,11 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
                     <Trash size={20} weight="regular" />
                   </button>
                 )}
-                <button onClick={() => { wasNewEntryRef.current = false; setIsEditing(false); handleSave(); }} className="done-button" title="Done">
+                <button onClick={async () => { 
+                  wasNewEntryRef.current = false; 
+                  await handleSave(); 
+                  setIsEditing(false); 
+                }} className="done-button" title="Done">
                   Done
                 </button>
               </>
