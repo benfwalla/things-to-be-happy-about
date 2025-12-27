@@ -146,7 +146,7 @@ export default function App() {
 
   return (
     <div className="app">
-      <header className="header">
+      <header className={`header ${isAuthenticated ? 'authenticated' : ''}`}>
         <h1>
           <a href="/" className="title-link">
             things to be happy about
