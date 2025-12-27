@@ -238,7 +238,7 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
 
   const canEditBonus =
     (!isAuthenticated && entry.date === currentEasternDate) ||
-    (isAuthenticated && isEditing);
+    (isAuthenticated && (isEditing || entry.date === currentEasternDate));
   const isBonusLocked = !canEditBonus;
   const remainingChars = Math.max(0, 250 - bonusCharCount);
 
@@ -351,7 +351,8 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
           ))}
         </ol>
       )}
-      <div className="bonus-section">
+      {!isAuthenticated && !entry.bonus && entry.things.length === 0 ? null : (
+        <div className="bonus-section">
         {canEditBonus ? (
           <>
             <div className="bonus-editor-clean">
@@ -401,6 +402,7 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
           </div>
         ) : null}
       </div>
+      )}
     </div>
   );
 }
