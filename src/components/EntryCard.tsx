@@ -383,18 +383,18 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
       <div className="bonus-section">
         {canEditBonus ? (
           <>
-            <div className="bonus-top-row">
+            <div className="bonus-editor-clean">
               <BonusTooltip isToday={entry.date === currentEasternDate} />
-            </div>
-            <div className="bonus-editor">
-              <BlockNoteView
-                editor={bonusEditor}
-                theme="light"
-                formattingToolbar={false}
-                sideMenu={false}
-                onChange={handleBonusChange}
-                data-libre-baskerville-font
-              />
+              <div className="bonus-blocknote-wrapper">
+                <BlockNoteView
+                  editor={bonusEditor}
+                  theme="light"
+                  formattingToolbar={false}
+                  sideMenu={false}
+                  onChange={handleBonusChange}
+                  data-libre-baskerville-font
+                />
+              </div>
               <span className={remainingChars <= 10 ? "bonus-counter warning" : "bonus-counter"}>
                 {remainingChars}
               </span>
@@ -402,7 +402,7 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
           </>
         ) : entry.bonus ? (
           <div className="bonus-display">
-            <BonusTooltip isToday={entry.date === currentEasternDate} />{" "}
+            <span className="bonus-label">Bonus:</span>{" "}
             <ReactMarkdown
               components={{
                 a: ({ node, ...props }) => (

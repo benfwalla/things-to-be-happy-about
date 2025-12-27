@@ -189,6 +189,13 @@
   color: #c23b22;
 }
 
+.bonus-section {
+  margin-top: 1.5rem;
+  color: #3a3028;
+  font-size: 1.15rem;
+  line-height: 1.5;
+}
+
 .bonus-display {
   color: #3a3028;
   font-size: 1.15rem;
@@ -273,23 +280,57 @@
   }
 }
 
-.bonus-editor {
+.bonus-editor-clean {
   position: relative;
-  border: 1px solid rgba(139, 119, 101, 0.25);
-  border-radius: 4px;
-  padding: 0.35rem 0.75rem 1.75rem 0.75rem;
-  background: rgba(255, 255, 255, 0.9);
 }
 
-.bonus-editor:focus-within {
-  border-color: rgba(139, 119, 101, 0.5);
-  box-shadow: 0 0 0 2px rgba(139, 119, 101, 0.15);
+.bonus-editor-clean .bonus-tooltip-container {
+  margin-bottom: 0.5rem;
+}
+
+.bonus-blocknote-wrapper {
+  position: relative;
+}
+
+.bonus-blocknote-wrapper .bn-editor {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  color: #3a3028 !important;
+  font-size: 1.15rem !important;
+  line-height: 1.5 !important;
+  font-family: 'Libre Baskerville', serif !important;
+}
+
+.bonus-blocknote-wrapper .bn-editor .bn-block-content {
+  padding: 0 !important;
+  color: #3a3028 !important;
+}
+
+.bonus-blocknote-wrapper .bn-editor:focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.bonus-blocknote-wrapper .bn-editor .bn-block-content[data-content-type="paragraph"] {
+  margin: 0 !important;
+}
+
+.bonus-blocknote-wrapper .bn-editor p {
+  margin: 0 !important;
+}
+
+.bonus-blocknote-wrapper .bn-editor .bn-block-content[data-content-type="paragraph"][data-empty="true"]::before {
+  content: "Add your bonus content...";
+  color: rgba(58, 48, 40, 0.4);
+  font-style: italic;
 }
 
 .bonus-editor .bn-container {
   min-height: 36px;
 }
-
 .bonus-editor .bn-editor {
   min-height: 26px;
   max-height: 180px;
