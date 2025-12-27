@@ -38,6 +38,7 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
   const [isEditing, setIsEditing] = useState(isNewEntry);
   const [editDate, setEditDate] = useState(entry.date);
   const [bonusCharCount, setBonusCharCount] = useState((entry.bonus ?? "").length);
+  const [isBonusFocused, setIsBonusFocused] = useState(false);
   const addEntry = useMutation(api.entries.addEntry);
   const updateBonus = useMutation(api.entries.updateBonus);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -375,7 +376,11 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
               >
                 Bonus:
               </span>
-              <div className="bonus-blocknote-wrapper">
+              <div 
+                className="bonus-blocknote-wrapper"
+                onFocus={() => setIsBonusFocused(true)}
+                onBlur={() => setIsBonusFocused(false)}
+              >
                 <BlockNoteView
                   editor={bonusEditor}
                   theme="light"
@@ -385,9 +390,11 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
                   data-libre-baskerville-font
                 />
               </div>
-              <span className={remainingChars <= 10 ? "bonus-counter warning" : "bonus-counter"}>
-                {remainingChars}
-              </span>
+              {isBonusFocused && (
+                <span className={remainingChars <= 10 ? "bonus-counter warning" : "bonus-counter"}>
+                  {remainingChars}
+                </span>
+              )}
             </div>
           </>
         ) : entry.bonus ? (
