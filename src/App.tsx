@@ -5,6 +5,7 @@ import { Rss } from "@phosphor-icons/react";
 import { api } from "../convex/_generated/api";
 import { useAuth } from "./contexts/AuthContext";
 import EntryCard from "./components/EntryCard";
+import { Tooltip } from "react-tooltip";
 import "./App.css";
 
 export default function App() {
@@ -192,6 +193,7 @@ export default function App() {
         )}
         {!result && <div className="loading">Loading...</div>}
       </div>
+      <Tooltip id="bonus-tooltip" />
     </div>
   );
 }

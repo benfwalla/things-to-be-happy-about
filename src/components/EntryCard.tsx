@@ -33,44 +33,6 @@ interface EntryCardProps {
   adminToken?: string | null;
 }
 
-function BonusTooltip({ isToday }: { isToday: boolean }) {
-  const [isVisible, setIsVisible] = useState(false);
-  const tooltipRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (tooltipRef.current && !tooltipRef.current.contains(event.target as Node)) {
-        setIsVisible(false);
-      }
-    };
-
-    if (isVisible) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isVisible]);
-
-  return (
-    <div className="bonus-tooltip-container" ref={tooltipRef}>
-      <span 
-        className={`bonus-label ${isToday ? 'tooltip-trigger' : ''}`}
-        onMouseEnter={() => isToday && window.innerWidth > 768 && setIsVisible(true)}
-        onMouseLeave={() => isToday && window.innerWidth > 768 && setIsVisible(false)}
-        onClick={() => isToday && setIsVisible(!isVisible)}
-      >
-        Bonus:
-      </span>
-      <div className={`bonus-tooltip ${isVisible && isToday ? 'show' : ''}`}>
-        <div className="tooltip-content">
-          Add anything you want. Bonus boxes get locked at the end of the day.
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = false, adminToken }: EntryCardProps) {
   const [isEditing, setIsEditing] = useState(isNewEntry);
@@ -393,7 +355,14 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
         {canEditBonus ? (
           <>
             <div className="bonus-editor-clean">
-              <BonusTooltip isToday={entry.date === currentEasternDate} />
+              <span 
+                className="bonus-label tooltip-trigger"
+                data-tooltip-id="bonus-tooltip"
+                data-tooltip-content="Add anything you want. Bonus boxes get locked at the end of the day."
+                data-tooltip-place="top"
+              >
+                Bonus:
+              </span>
               <div className="bonus-blocknote-wrapper">
                 <BlockNoteView
                   editor={bonusEditor}
@@ -411,7 +380,14 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
           </>
         ) : entry.bonus ? (
           <div className="bonus-display">
-            <span className="bonus-label">Bonus:</span>{" "}
+            <span 
+              className="bonus-label tooltip-trigger"
+              data-tooltip-id="bonus-tooltip"
+              data-tooltip-content="Add anything you want! Bonus boxes get locked at the end of the day."
+              data-tooltip-place="top"
+            >
+              Bonus:
+            </span>{" "}
             <ReactMarkdown
               components={{
                 a: ({ node, ...props }) => (
