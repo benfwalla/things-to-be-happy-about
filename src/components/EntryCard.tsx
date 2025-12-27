@@ -32,6 +32,47 @@ interface EntryCardProps {
   adminToken?: string | null;
 }
 
+function BonusTooltip() {
+  const [isVisible, setIsVisible] = useState(false);
+  const tooltipRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (tooltipRef.current && !tooltipRef.current.contains(event.target as Node)) {
+        setIsVisible(false);
+      }
+    };
+
+    if (isVisible) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isVisible]);
+
+  return (
+    <div className="bonus-tooltip-container" ref={tooltipRef}>
+      <span 
+        className="bonus-label tooltip-trigger"
+        onMouseEnter={() => window.innerWidth > 768 && setIsVisible(true)}
+        onMouseLeave={() => window.innerWidth > 768 && setIsVisible(false)}
+        onClick={() => setIsVisible(!isVisible)}
+      >
+        Bonus
+      </span>
+      {isVisible && (
+        <div className="bonus-tooltip">
+          <div className="tooltip-content">
+            Add anything you want. Bonus boxes get locked at the end of the day.
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = false, adminToken }: EntryCardProps) {
   const [isEditing, setIsEditing] = useState(isNewEntry);
   const [editDate, setEditDate] = useState(entry.date);
@@ -68,17 +109,17 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
     if (!entry || entry.things.length === 0) {
       return [
         {
-          type: "numberedListItem",
+          type: "numberedListItem" as const,
           content: [],
         },
       ];
     }
 
     return entry.things.map((thing) => ({
-      type: "numberedListItem",
+      type: "numberedListItem" as const,
       content: [
         {
-          type: "text",
+          type: "text" as const,
           text: thing,
           styles: {},
         },
@@ -345,7 +386,7 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
         {canEditBonus ? (
           <>
             <div className="bonus-top-row">
-              <span className="bonus-label">Bonus</span>
+              <BonusTooltip />
             </div>
             <div className="bonus-editor">
               <BlockNoteView
@@ -363,7 +404,7 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
           </>
         ) : entry.bonus ? (
           <div className="bonus-display">
-            <span className="bonus-label">Bonus:</span>{" "}
+            <BonusTooltip />{" "}
             <ReactMarkdown
               components={{
                 a: ({ node, ...props }) => (
@@ -404,7 +445,7 @@ function getBonusInitialContent(bonus?: string) {
   if (!bonus) {
     return [
       {
-        type: "paragraph",
+        type: "paragraph" as const,
         content: [],
       },
     ];
@@ -412,10 +453,10 @@ function getBonusInitialContent(bonus?: string) {
 
   return [
     {
-      type: "paragraph",
+      type: "paragraph" as const,
       content: [
         {
-          type: "text",
+          type: "text" as const,
           text: bonus,
           styles: {},
         },
