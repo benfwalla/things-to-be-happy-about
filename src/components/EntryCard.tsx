@@ -32,7 +32,7 @@ interface EntryCardProps {
   adminToken?: string | null;
 }
 
-function BonusTooltip() {
+function BonusTooltip({ isToday }: { isToday: boolean }) {
   const [isVisible, setIsVisible] = useState(false);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
@@ -55,20 +55,18 @@ function BonusTooltip() {
   return (
     <div className="bonus-tooltip-container" ref={tooltipRef}>
       <span 
-        className="bonus-label tooltip-trigger"
-        onMouseEnter={() => window.innerWidth > 768 && setIsVisible(true)}
-        onMouseLeave={() => window.innerWidth > 768 && setIsVisible(false)}
-        onClick={() => setIsVisible(!isVisible)}
+        className={`bonus-label ${isToday ? 'tooltip-trigger' : ''}`}
+        onMouseEnter={() => isToday && window.innerWidth > 768 && setIsVisible(true)}
+        onMouseLeave={() => isToday && window.innerWidth > 768 && setIsVisible(false)}
+        onClick={() => isToday && setIsVisible(!isVisible)}
       >
-        Bonus
+        Bonus:
       </span>
-      {isVisible && (
-        <div className="bonus-tooltip">
-          <div className="tooltip-content">
-            Add anything you want. Bonus boxes get locked at the end of the day.
-          </div>
+      <div className={`bonus-tooltip ${isVisible && isToday ? 'show' : ''}`}>
+        <div className="tooltip-content">
+          Add anything you want. Bonus boxes get locked at the end of the day.
         </div>
-      )}
+      </div>
     </div>
   );
 }
@@ -386,7 +384,7 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
         {canEditBonus ? (
           <>
             <div className="bonus-top-row">
-              <BonusTooltip />
+              <BonusTooltip isToday={entry.date === currentEasternDate} />
             </div>
             <div className="bonus-editor">
               <BlockNoteView
@@ -404,7 +402,7 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
           </>
         ) : entry.bonus ? (
           <div className="bonus-display">
-            <BonusTooltip />{" "}
+            <BonusTooltip isToday={entry.date === currentEasternDate} />{" "}
             <ReactMarkdown
               components={{
                 a: ({ node, ...props }) => (
