@@ -219,31 +219,32 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
   useEffect(() => cleanup, []);
 
   useEffect(() => {
-    if (bonusSaveTimeoutRef.current) {
-      clearTimeout(bonusSaveTimeoutRef.current);
-    }
-    setBonusCharCount((entry.bonus ?? "").length);
-    bonusEditor.replaceBlocks(
-      bonusEditor.document,
-      getBonusInitialContent(entry.bonus)
-    );
-  }, [entry.bonus, bonusEditor]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
+    // Calculate milliseconds until next midnight
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    const msUntilMidnight = tomorrow.getTime() - now.getTime();
+    
+    const timeout = setTimeout(() => {
       setCurrentEasternDate(getEasternDateString());
-    }, 60 * 1000);
-    return () => clearInterval(interval);
+      // Set up daily update after first midnight
+      const interval = setInterval(() => {
+        setCurrentEasternDate(getEasternDateString());
+      }, 24 * 60 * 60 * 1000); // Every 24 hours
+      return () => clearInterval(interval);
+    }, msUntilMidnight);
+    
+    return () => clearTimeout(timeout);
   }, []);
 
   const canEditBonus =
     (!isAuthenticated && entry.date === currentEasternDate) ||
     (isAuthenticated && (isEditing || entry.date === currentEasternDate));
-  const isBonusLocked = !canEditBonus;
   const remainingChars = Math.max(0, 250 - bonusCharCount);
 
   const saveBonus = async (value: string) => {
-    if (isBonusLocked && !isAuthenticated) return;
+    if (!canEditBonus) return;
     try {
       await updateBonus({
         date: entry.date,
@@ -256,7 +257,7 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
   };
 
   const scheduleBonusSave = (value: string) => {
-    if (isBonusLocked && !isAuthenticated) return;
+    if (!canEditBonus) return;
     if (bonusSaveTimeoutRef.current) {
       clearTimeout(bonusSaveTimeoutRef.current);
     }
@@ -268,8 +269,10 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
   const handleBonusChange = () => {
     const bonusText = extractBonusFromBlocks(bonusEditor.document);
     if (bonusText.length > 250) {
+      // Only truncate if we're actually over the limit
       const trimmed = bonusText.slice(0, 250);
       setBonusCharCount(trimmed.length);
+      // Replace content without trying to preserve cursor to avoid TS errors
       bonusEditor.replaceBlocks(
         bonusEditor.document,
         getBonusInitialContent(trimmed)
