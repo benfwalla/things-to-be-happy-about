@@ -334,30 +334,32 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
           />
         </div>
       ) : (
-        <ol className="entry-list">
+        <>
           {entry.things.length === 0 && !isAuthenticated && entry.date === currentEasternDate ? (
-            <li className="no-entries-placeholder">
+            <p className="no-entries-placeholder">
               No entries from Ben yet.
-            </li>
+            </p>
           ) : (
-            entry.things.map((thing, index) => (
-              <li key={index}>
-                <ReactMarkdown
-                  components={{
-                    a: ({ node, ...props }) => (
-                      <a {...props} target="_blank" rel="noopener noreferrer" />
-                    ),
-                    p: ({ node, ...props }) => <span {...props} />,
-                  }}
-                >
-                  {thing}
-                </ReactMarkdown>
-              </li>
-            ))
+            <ol className="entry-list">
+              {entry.things.map((thing, index) => (
+                <li key={index}>
+                  <ReactMarkdown
+                    components={{
+                      a: ({ node, ...props }) => (
+                        <a {...props} target="_blank" rel="noopener noreferrer" />
+                      ),
+                      p: ({ node, ...props }) => <span {...props} />,
+                    }}
+                  >
+                    {thing}
+                  </ReactMarkdown>
+                </li>
+              ))}
+            </ol>
           )}
-        </ol>
+        </>
       )}
-      {!isAuthenticated && !entry.bonus && entry.things.length === 0 && entry.date !== currentEasternDate ? null : (
+      {(!isAuthenticated && !entry.bonus && entry.date !== currentEasternDate) || (isAuthenticated && !canEditBonus && !entry.bonus) ? null : (
         <div className="bonus-section">
         {canEditBonus ? (
           <>
