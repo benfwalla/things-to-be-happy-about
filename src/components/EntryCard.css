@@ -10,6 +10,7 @@
   border: 1px solid rgba(139, 119, 101, 0.1);
 }
 
+/* Date styles */
 .entry-date {
   font-size: 1.1rem;
   color: #5a4a3a;
@@ -38,6 +39,7 @@
   border-color: rgba(139, 119, 101, 0.5);
 }
 
+/* Entry list styles */
 .entry-list {
   list-style: decimal;
   padding-left: 1.5em;
@@ -70,6 +72,13 @@
 
 .entry-list li a:hover {
   color: #5a4a3a;
+}
+
+.entry-list li.no-entries-placeholder {
+  font-style: italic;
+  color: rgba(58, 48, 40, 0.6);
+  list-style: none;
+  margin-left: -1.5em;
 }
 
 /* Admin-specific card header styles */
@@ -181,7 +190,7 @@
   position: absolute;
   right: 0.75rem;
   bottom: 0.5rem;
-  color: #8b7765;
+  color: #999999;
   font-size: 0.85rem;
 }
 
@@ -206,11 +215,19 @@
   font-weight: 400;
   font-size: 1.15rem;
   color: #3a3028;
+  margin-bottom: 0.5rem;
+  display: inline-block;
 }
 
 .bonus-label.tooltip-trigger {
   border-bottom: 1.5px dotted #3a3028;
   cursor: help;
+  transition: all 0.2s ease;
+}
+
+.bonus-label.tooltip-trigger:hover {
+  color: #5a4a3a;
+  border-bottom-color: #5a4a3a;
 }
 
 .bonus-editor-clean {
@@ -219,6 +236,14 @@
 
 .bonus-blocknote-wrapper {
   position: relative;
+  transition: background-color 0.2s ease;
+  border-radius: 4px;
+  padding: 4px;
+  margin: -4px;
+}
+
+.bonus-blocknote-wrapper:hover {
+  background-color: rgba(139, 119, 101, 0.05);
 }
 
 .bonus-blocknote-wrapper .bn-editor {
@@ -263,4 +288,9 @@
 .bonus-editor .bn-editor {
   min-height: 26px;
   max-height: 180px;
+}
+
+/* Bonus editor in clean layout */
+.bonus-blocknote-wrapper .bn-editor {
+  min-height: 65px !important;
 }

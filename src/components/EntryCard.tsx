@@ -335,31 +335,37 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
         </div>
       ) : (
         <ol className="entry-list">
-          {entry.things.map((thing, index) => (
-            <li key={index}>
-              <ReactMarkdown
-                components={{
-                  a: ({ node, ...props }) => (
-                    <a {...props} target="_blank" rel="noopener noreferrer" />
-                  ),
-                  p: ({ node, ...props }) => <span {...props} />,
-                }}
-              >
-                {thing}
-              </ReactMarkdown>
+          {entry.things.length === 0 && !isAuthenticated && entry.date === currentEasternDate ? (
+            <li className="no-entries-placeholder">
+              No entries from Ben yet.
             </li>
-          ))}
+          ) : (
+            entry.things.map((thing, index) => (
+              <li key={index}>
+                <ReactMarkdown
+                  components={{
+                    a: ({ node, ...props }) => (
+                      <a {...props} target="_blank" rel="noopener noreferrer" />
+                    ),
+                    p: ({ node, ...props }) => <span {...props} />,
+                  }}
+                >
+                  {thing}
+                </ReactMarkdown>
+              </li>
+            ))
+          )}
         </ol>
       )}
-      {!isAuthenticated && !entry.bonus && entry.things.length === 0 ? null : (
+      {!isAuthenticated && !entry.bonus && entry.things.length === 0 && entry.date !== currentEasternDate ? null : (
         <div className="bonus-section">
         {canEditBonus ? (
           <>
             <div className="bonus-editor-clean">
               <span 
-                className="bonus-label tooltip-trigger"
-                data-tooltip-id="bonus-tooltip"
-                data-tooltip-content="Add anything you want. Bonus boxes get locked at the end of the day."
+                className={entry.date === currentEasternDate ? "bonus-label tooltip-trigger" : "bonus-label"}
+                data-tooltip-id={entry.date === currentEasternDate ? "bonus-tooltip" : undefined}
+                data-tooltip-content={entry.date === currentEasternDate ? "Add anything you want. Bonus boxes get locked at the end of the day." : undefined}
                 data-tooltip-place="top"
               >
                 Bonus:
@@ -382,9 +388,9 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
         ) : entry.bonus ? (
           <div className="bonus-display">
             <span 
-              className="bonus-label tooltip-trigger"
-              data-tooltip-id="bonus-tooltip"
-              data-tooltip-content="Add anything you want! Bonus boxes get locked at the end of the day."
+              className={entry.date === currentEasternDate ? "bonus-label tooltip-trigger" : "bonus-label"}
+              data-tooltip-id={entry.date === currentEasternDate ? "bonus-tooltip" : undefined}
+              data-tooltip-content={entry.date === currentEasternDate ? "Add anything you want! Bonus boxes get locked at the end of the day." : undefined}
               data-tooltip-place="top"
             >
               Bonus:
