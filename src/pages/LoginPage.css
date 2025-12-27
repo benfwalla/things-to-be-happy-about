@@ -1,8 +1,60 @@
 .login-page {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
   min-height: 100vh;
+}
+
+.login-header {
+  background: transparent;
+  padding: 3rem 2rem 2rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.login-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 300;
+  color: #5a4a3a;
+  text-transform: lowercase;
+  letter-spacing: 0.5px;
+}
+
+.login-header .title-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.login-header .header-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.login-header .rss-link {
+  color: #5a4a3a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 2px;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.login-header .rss-link:hover {
+  background: rgba(139, 119, 101, 0.1);
+  color: #3a2a1a;
+}
+
+.login-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 10rem;
 }
 
 .login-card {
@@ -67,4 +119,28 @@
   text-align: center;
   font-size: 1rem;
   font-style: italic;
+}
+
+/* Mobile responsive header */
+@media (max-width: 640px) {
+  .login-header {
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 2rem 1.5rem 1.5rem 1.5rem;
+  }
+
+  .login-header h1 {
+    font-size: 1.5rem;
+    text-align: right;
+    width: 100%;
+  }
+
+  .login-header .header-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .login-card {
+    margin: 0 1rem;
+  }
 }
