@@ -4,6 +4,7 @@ import { useMutation } from "convex/react";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
 import { BlockNoteSchema, defaultBlockSpecs } from "@blocknote/core";
+import { en } from "@blocknote/core/locales";
 import { api } from "../../convex/_generated/api";
 import ReactMarkdown from "react-markdown";
 import "@blocknote/mantine/style.css";
@@ -137,6 +138,14 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
       },
     }),
     initialContent: getBonusInitialContent(entry.bonus),
+    dictionary: {
+      ...en,
+      placeholders: {
+        ...en.placeholders,
+        default: "Go ahead, write anything you want :)",
+        emptyDocument: "Go ahead, write anything you want :)",
+      },
+    },
   });
 
   // Extract text from BlockNote blocks
