@@ -246,7 +246,7 @@
   position: relative;
   transition: background-color 0.2s ease;
   border-radius: 4px;
-  padding: 4px;
+  padding: 4px 8px;
   margin: -4px;
 }
 
@@ -257,7 +257,6 @@
 .bonus-blocknote-wrapper .bn-editor {
   background: transparent !important;
   border: none !important;
-  padding: 0 !important;
   margin: 0 !important;
   color: #3a3028 !important;
   font-size: 1.15rem !important;
