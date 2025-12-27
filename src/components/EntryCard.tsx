@@ -226,7 +226,9 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
     return () => clearInterval(interval);
   }, []);
 
-  const canEditBonus = isAuthenticated || entry.date === currentEasternDate;
+  const canEditBonus =
+    (!isAuthenticated && entry.date === currentEasternDate) ||
+    (isAuthenticated && isEditing);
   const isBonusLocked = !canEditBonus;
   const remainingChars = Math.max(0, 250 - bonusCharCount);
 
