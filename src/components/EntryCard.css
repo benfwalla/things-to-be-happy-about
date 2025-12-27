@@ -133,12 +133,24 @@
 /* BlockNote font override using data attribute */
 .bn-container[data-libre-baskerville-font] .bn-editor {
   padding-inline: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 .bn-container[data-libre-baskerville-font] .bn-editor * {
   font-family: 'Libre Baskerville', serif !important;
   font-size: 1.15rem !important;
   line-height: 1.7 !important;
+}
+
+.bn-container[data-libre-baskerville-font] .bn-editor .bn-block {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.bn-container[data-libre-baskerville-font] .bn-editor .bn-inline-content {
+  padding: 0 !important;
+  min-height: 0 !important;
 }
 
 /* Remove BlockNote indentation */
@@ -155,4 +167,58 @@
 
 .bn-container[data-libre-baskerville-font] li {
   padding: 0.25rem 0 !important;
+}
+
+.bonus-section {
+  margin-top: 0.75rem;
+}
+
+.bonus-top-row {
+  margin-bottom: 0.5rem;
+}
+
+.bonus-counter {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.5rem;
+  color: #8b7765;
+  font-size: 0.85rem;
+}
+
+.bonus-counter.warning {
+  color: #c23b22;
+}
+
+.bonus-display {
+  color: #3a3028;
+  font-size: 1.15rem;
+  line-height: 1.5;
+}
+
+.bonus-label {
+  font-weight: 400;
+  font-size: 1.15rem;
+  color: #3a3028;
+}
+
+.bonus-editor {
+  position: relative;
+  border: 1px solid rgba(139, 119, 101, 0.25);
+  border-radius: 4px;
+  padding: 0.35rem 0.75rem 1.75rem 0.75rem;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.bonus-editor:focus-within {
+  border-color: rgba(139, 119, 101, 0.5);
+  box-shadow: 0 0 0 2px rgba(139, 119, 101, 0.15);
+}
+
+.bonus-editor .bn-container {
+  min-height: 36px;
+}
+
+.bonus-editor .bn-editor {
+  min-height: 26px;
+  max-height: 180px;
 }

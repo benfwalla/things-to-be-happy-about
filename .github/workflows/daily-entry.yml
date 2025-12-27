@@ -1,0 +1,37 @@
+name: Create Daily Entry
+
+on:
+  schedule:
+    - cron: "0 4 * * *" # Midnight Eastern during daylight time
+    - cron: "0 5 * * *" # Midnight Eastern during standard time
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Override date (YYYY-MM-DD, America/New_York)"
+        required: false
+        type: string
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Create daily entry
+        run: bun run scripts/create-todays-entry.ts "${{ github.event.inputs.date }}"
+        env:
+          CONVEX_DEPLOYMENT: ${{ secrets.CONVEX_DEPLOYMENT }}
+          CONVEX_ACCESS_TOKEN: ${{ secrets.CONVEX_ACCESS_TOKEN }}
+          NEXT_PUBLIC_CONVEX_URL: ${{ secrets.NEXT_PUBLIC_CONVEX_URL }}

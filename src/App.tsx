@@ -8,7 +8,7 @@ import EntryCard from "./components/EntryCard";
 import "./App.css";
 
 export default function App() {
-  const { isAuthenticated, isLoading, logout } = useAuth();
+  const { isAuthenticated, isLoading, logout, adminToken } = useAuth();
   const navigate = useNavigate();
   const [allEntries, setAllEntries] = useState<any[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
@@ -22,10 +22,17 @@ export default function App() {
 
   // Get today's date in YYYY-MM-DD format (local timezone)
   const todayDate = useMemo(() => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/New_York",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    const parts = formatter.formatToParts(new Date());
+    const year = parts.find((p) => p.type === "year")?.value;
+    const month = parts.find((p) => p.type === "month")?.value;
+    const day = parts.find((p) => p.type === "day")?.value;
+    if (!year || !month || !day) return "";
     return `${year}-${month}-${day}`;
   }, []);
 
@@ -40,11 +47,12 @@ export default function App() {
           const todayExists = entries.some((entry) => entry.date === todayDate);
 
           // If today's entry doesn't exist and user is authenticated, add a placeholder at the beginning
-          if (!todayExists && isAuthenticated) {
+          if (!todayExists) {
             const placeholderEntry = {
               _id: "temp-today",
               date: todayDate,
               things: [],
+              bonus: "",
             };
             return [placeholderEntry, ...entries];
           }
@@ -57,7 +65,7 @@ export default function App() {
       });
       setIsLoadingMore(false);
     }
-  }, [result, cursor, todayDate, isAuthenticated]);
+  }, [result, cursor, todayDate]);
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
@@ -123,6 +131,7 @@ export default function App() {
       _id: `temp-new-${Date.now()}`,
       date: todayDate,
       things: [],
+      bonus: "",
     };
     setAllEntries((prev) => [newEntry, ...prev]);
   };
@@ -169,11 +178,12 @@ export default function App() {
       <div className="entries-container">
         {allEntries.map((entry) => (
           <EntryCard
-            key={entry.date}
+            key={entry._id}
             entry={entry}
             onDelete={isAuthenticated ? handleDelete : undefined}
             isNewEntry={entry._id === "temp-today" || entry._id.startsWith("temp-new-")}
             isAuthenticated={isAuthenticated}
+            adminToken={adminToken}
           />
         ))}
         {!result?.isDone && <div ref={loadMoreRef} style={{ height: '20px' }} />}

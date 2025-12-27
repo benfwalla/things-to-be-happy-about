@@ -30,11 +30,15 @@ http.route({
         // Link to the main page - no individual post pages
         const entryUrl = siteUrl;
 
+        const bonusHtml = entry.bonus
+          ? `<p><strong>Bonus:</strong> ${escapeXml(entry.bonus)}</p>`
+          : "";
+
         // Create HTML content from the things array
         const contentHtml = `
           <ul>
             ${entry.things.map((thing) => `<li>${escapeXml(thing)}</li>`).join("\n            ")}
-          </ul>
+          </ul>${bonusHtml ? `\n${bonusHtml}` : ""}
         `.trim();
 
         // Parse date and create RFC-822 formatted date for RSS

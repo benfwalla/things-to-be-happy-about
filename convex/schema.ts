@@ -5,6 +5,7 @@ export default defineSchema({
   entries: defineTable({
     date: v.string(),
     things: v.array(v.string()),
+    bonus: v.optional(v.string()),
     deletedAt: v.optional(v.number()),
   })
     .index("by_date", ["date"])

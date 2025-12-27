@@ -21,6 +21,7 @@ interface Entry {
   _id: string;
   date: string;
   things: string[];
+  bonus?: string;
 }
 
 interface EntryCardProps {
@@ -28,25 +29,30 @@ interface EntryCardProps {
   onDelete?: (id: string) => void;
   isNewEntry?: boolean;
   isAuthenticated?: boolean;
+  adminToken?: string | null;
 }
 
-function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = false }: EntryCardProps) {
+function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = false, adminToken }: EntryCardProps) {
   const [isEditing, setIsEditing] = useState(isNewEntry);
   const [editDate, setEditDate] = useState(entry.date);
+  const [bonusCharCount, setBonusCharCount] = useState((entry.bonus ?? "").length);
   const addEntry = useMutation(api.entries.addEntry);
+  const updateBonus = useMutation(api.entries.updateBonus);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const bonusSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const wasNewEntryRef = useRef(isNewEntry);
+  const [currentEasternDate, setCurrentEasternDate] = useState(() =>
+    getEasternDateString()
+  );
 
   // Keep edit mode open if this started as a new entry, even after first save
   useEffect(() => {
     if (wasNewEntryRef.current && !isEditing) {
-      // Entry was created as new but user hasn't clicked Done yet
-      // Keep it in edit mode
       setIsEditing(true);
     }
-  }, [entry._id]);
+  }, [entry._id, isEditing]);
+
   const formatDate = (dateString: string) => {
-    // Create date at noon to avoid timezone issues
     const [year, month, day] = dateString.split('-').map(Number);
     const date = new Date(year, month - 1, day, 12, 0, 0);
     return date.toLocaleDateString("en-US", {
@@ -85,6 +91,15 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
     initialContent: getInitialContent(),
   });
 
+  const bonusEditor = useCreateBlockNote({
+    schema: BlockNoteSchema.create({
+      blockSpecs: {
+        paragraph: defaultBlockSpecs.paragraph,
+      },
+    }),
+    initialContent: getBonusInitialContent(entry.bonus),
+  });
+
   // Extract text from BlockNote blocks
   const extractThingsFromBlocks = (blocks: any[]): string[] => {
     const things: string[] = [];
@@ -95,8 +110,7 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
         if (text.trim()) {
           things.push(text.trim());
         }
-      }
-      else if (block.type === "paragraph") {
+      } else if (block.type === "paragraph") {
         const text = extractTextFromContent(block.content || []);
         if (text.trim()) {
           const lines = text.split(/\n-\s*/);
@@ -142,6 +156,19 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
     return text;
   };
 
+  const extractBonusFromBlocks = (blocks: any[]): string => {
+    const lines: string[] = [];
+    blocks.forEach((block) => {
+      if (block.type === "paragraph") {
+        const text = extractTextFromContent(block.content || []);
+        if (text.trim()) {
+          lines.push(text.trim());
+        }
+      }
+    });
+    return lines.join("\n");
+  };
+
   // Auto-save on editor change (doesn't close edit mode)
   const handleSave = async () => {
     const blocks = editor.document;
@@ -150,7 +177,6 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
     if (things.length > 0) {
       try {
         await addEntry({ date: editDate, things });
-        // Don't close edit mode on auto-save
       } catch (error) {
         console.error("Error saving entry:", error);
       }
@@ -159,7 +185,7 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
 
   // Debounced save - only triggers on change while editing
   const handleChange = () => {
-    if (!isEditing) return; // Don't save if not in edit mode
+    if (!isEditing) return;
 
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
@@ -175,11 +201,73 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
     }
+    if (bonusSaveTimeoutRef.current) {
+      clearTimeout(bonusSaveTimeoutRef.current);
+    }
   };
 
+  useEffect(() => cleanup, []);
+
   useEffect(() => {
-    return cleanup;
+    if (bonusSaveTimeoutRef.current) {
+      clearTimeout(bonusSaveTimeoutRef.current);
+    }
+    setBonusCharCount((entry.bonus ?? "").length);
+    bonusEditor.replaceBlocks(
+      bonusEditor.document,
+      getBonusInitialContent(entry.bonus)
+    );
+  }, [entry.bonus, bonusEditor]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentEasternDate(getEasternDateString());
+    }, 60 * 1000);
+    return () => clearInterval(interval);
   }, []);
+
+  const canEditBonus = isAuthenticated || entry.date === currentEasternDate;
+  const isBonusLocked = !canEditBonus;
+  const remainingChars = Math.max(0, 250 - bonusCharCount);
+
+  const saveBonus = async (value: string) => {
+    if (isBonusLocked && !isAuthenticated) return;
+    try {
+      await updateBonus({
+        date: entry.date,
+        bonus: value,
+        adminToken: isAuthenticated ? adminToken ?? undefined : undefined,
+      });
+    } catch (error) {
+      console.error("Error saving bonus:", error);
+    }
+  };
+
+  const scheduleBonusSave = (value: string) => {
+    if (isBonusLocked && !isAuthenticated) return;
+    if (bonusSaveTimeoutRef.current) {
+      clearTimeout(bonusSaveTimeoutRef.current);
+    }
+    bonusSaveTimeoutRef.current = setTimeout(() => {
+      saveBonus(value);
+    }, 500);
+  };
+
+  const handleBonusChange = () => {
+    const bonusText = extractBonusFromBlocks(bonusEditor.document);
+    if (bonusText.length > 250) {
+      const trimmed = bonusText.slice(0, 250);
+      setBonusCharCount(trimmed.length);
+      bonusEditor.replaceBlocks(
+        bonusEditor.document,
+        getBonusInitialContent(trimmed)
+      );
+      scheduleBonusSave(trimmed);
+      return;
+    }
+    setBonusCharCount(bonusText.length);
+    scheduleBonusSave(bonusText);
+  };
 
   return (
     <div className={isAuthenticated ? "admin-entry-card" : "entry-card"}>
@@ -251,8 +339,85 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
           ))}
         </ol>
       )}
+      <div className="bonus-section">
+        {canEditBonus ? (
+          <>
+            <div className="bonus-top-row">
+              <span className="bonus-label">Bonus</span>
+            </div>
+            <div className="bonus-editor">
+              <BlockNoteView
+                editor={bonusEditor}
+                theme="light"
+                formattingToolbar={false}
+                sideMenu={false}
+                onChange={handleBonusChange}
+                data-libre-baskerville-font
+              />
+              <span className={remainingChars <= 10 ? "bonus-counter warning" : "bonus-counter"}>
+                {remainingChars}
+              </span>
+            </div>
+          </>
+        ) : entry.bonus ? (
+          <div className="bonus-display">
+            <span className="bonus-label">Bonus:</span>{" "}
+            <ReactMarkdown
+              components={{
+                a: ({ node, ...props }) => (
+                  <a {...props} target="_blank" rel="noopener noreferrer" />
+                ),
+                p: ({ node, ...props }) => <span {...props} />,
+              }}
+            >
+              {entry.bonus}
+            </ReactMarkdown>
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }
 
 export default EntryCard;
+
+function getEasternDateString() {
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const parts = formatter.formatToParts(new Date());
+  const year = parts.find((p) => p.type === "year")?.value;
+  const month = parts.find((p) => p.type === "month")?.value;
+  const day = parts.find((p) => p.type === "day")?.value;
+  if (!year || !month || !day) {
+    throw new Error("Unable to compute Eastern date");
+  }
+  return `${year}-${month}-${day}`;
+}
+
+function getBonusInitialContent(bonus?: string) {
+  if (!bonus) {
+    return [
+      {
+        type: "paragraph",
+        content: [],
+      },
+    ];
+  }
+
+  return [
+    {
+      type: "paragraph",
+      content: [
+        {
+          type: "text",
+          text: bonus,
+          styles: {},
+        },
+      ],
+    },
+  ];
+}

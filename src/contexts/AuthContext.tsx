@@ -5,6 +5,7 @@ import { api } from "../../convex/_generated/api";
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
+  adminToken?: string | null;
   login: (password: string) => Promise<boolean>;
   logout: () => Promise<void>;
 }
@@ -14,6 +15,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [adminToken, setAdminToken] = useState<string | null>(localStorage.getItem("admin_token"));
   
   const loginMutation = useMutation(api.auth.login);
   const logoutMutation = useMutation(api.auth.logout);
@@ -28,6 +30,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Clear expired tokens
       if (!checkAuthQuery.authenticated && localStorage.getItem("admin_token")) {
         localStorage.removeItem("admin_token");
+        setAdminToken(null);
+      } else if (checkAuthQuery.authenticated) {
+        setAdminToken(localStorage.getItem("admin_token"));
       }
       
       setIsLoading(false);
@@ -40,6 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (result) {
         localStorage.setItem("admin_token", result.token);
         setIsAuthenticated(true);
+        setAdminToken(result.token);
         return true;
       }
     } catch (error) {
@@ -58,11 +64,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       localStorage.removeItem("admin_token");
       setIsAuthenticated(false);
+      setAdminToken(null);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout, adminToken }}>
       {children}
     </AuthContext.Provider>
   );
