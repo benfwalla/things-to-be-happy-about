@@ -202,9 +202,7 @@
 }
 
 .bonus-label.tooltip-trigger {
-  text-decoration: dotted underline;
-  text-underline-offset: 4px;
-  text-decoration-thickness: 1px;
+  border-bottom: 1.5px dotted #3a3028;
   cursor: help;
   position: relative;
 }
