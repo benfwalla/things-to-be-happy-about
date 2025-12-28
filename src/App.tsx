@@ -1,10 +1,10 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { useNavigate } from "react-router-dom";
-import { Rss } from "@phosphor-icons/react";
 import { api } from "../convex/_generated/api";
 import { useAuth } from "./contexts/AuthContext";
 import EntryCard from "./components/EntryCard";
+import TopSection from "./components/TopSection";
 import { Tooltip } from "react-tooltip";
 import "./App.css";
 
@@ -147,35 +147,11 @@ export default function App() {
 
   return (
     <div className="app">
-      <header className={`header ${isAuthenticated ? 'authenticated' : ''}`}>
-        <h1>
-          <a href="/" className="title-link">
-            things to be happy about
-          </a>
-        </h1>
-        <div className="header-actions">
-          {isAuthenticated ? (
-            <>
-              <button onClick={handleCreateNew} className="new-button">
-                + New
-              </button>
-              <button onClick={handleLogout} className="logout-button">
-                Logout
-              </button>
-            </>
-          ) : (
-            <a
-              href="/feed"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rss-link"
-              title="Subscribe to RSS feed"
-            >
-              <Rss size={24} weight="regular" />
-            </a>
-          )}
-        </div>
-      </header>
+      <TopSection
+        isAdmin={isAuthenticated}
+        onCreateNew={handleCreateNew}
+        onLogout={handleLogout}
+      />
       <div className="entries-container">
         {allEntries.map((entry) => (
           <EntryCard

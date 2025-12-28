@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Rss } from "@phosphor-icons/react";
 import { useAuth } from "../contexts/AuthContext";
+import TopSection from "../components/TopSection";
 import "./LoginPage.css";
 
 export default function LoginPage() {
@@ -28,24 +28,7 @@ export default function LoginPage() {
 
   return (
     <div className="login-page">
-      <header className="login-header">
-        <h1>
-          <a href="/" className="title-link">
-            things to be happy about
-          </a>
-        </h1>
-        <div className="header-actions">
-          <a
-            href="/feed"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rss-link"
-            title="Subscribe to RSS feed"
-          >
-            <Rss size={24} weight="regular" />
-          </a>
-        </div>
-      </header>
+      <TopSection />
       <div className="login-content">
         <div className="login-card">
           <h1>Admin Login</h1>
