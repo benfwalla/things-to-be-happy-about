@@ -412,7 +412,7 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
                 a: ({ node, ...props }) => (
                   <a {...props} target="_blank" rel="noopener noreferrer" />
                 ),
-                p: ({ node, ...props }) => <span {...props} />,
+                p: ({ node, ...props }) => <p {...props} />,
               }}
             >
               {entry.bonus}
