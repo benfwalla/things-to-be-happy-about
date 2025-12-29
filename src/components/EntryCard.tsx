@@ -407,16 +407,7 @@ function EntryCard({ entry, onDelete, isNewEntry = false, isAuthenticated = fals
             >
               Bonus:
             </span>{" "}
-            <ReactMarkdown
-              components={{
-                a: ({ node, ...props }) => (
-                  <a {...props} target="_blank" rel="noopener noreferrer" />
-                ),
-                p: ({ node, ...props }) => <p {...props} />,
-              }}
-            >
-              {entry.bonus}
-            </ReactMarkdown>
+            <span className="bonus-text">{entry.bonus}</span>
           </div>
         ) : null}
       </div>

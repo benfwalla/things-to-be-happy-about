@@ -219,6 +219,10 @@
   line-height: 1.5;
 }
 
+.bonus-text {
+  white-space: pre-wrap;
+}
+
 .bonus-label {
   font-weight: 400;
   font-size: 1.15rem;
