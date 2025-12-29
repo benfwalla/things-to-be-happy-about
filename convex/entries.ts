@@ -72,11 +72,7 @@ export const addEntry = mutation({
       .first();
 
     if (existing) {
-      // Update existing entry
-      await ctx.db.patch(existing._id, {
-        things: args.things,
-        bonus: args.bonus ?? existing.bonus,
-      });
+      // Entry already exists - return it without modification (idempotent)
       return existing._id;
     } else {
       // Create new entry
