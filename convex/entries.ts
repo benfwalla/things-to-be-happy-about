@@ -60,7 +60,7 @@ export const getEntries = query({
 export const addEntry = mutation({
   args: {
     date: v.string(),
-    things: v.array(v.string()),
+    things: v.optional(v.array(v.string())),
     bonus: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
@@ -78,7 +78,7 @@ export const addEntry = mutation({
       // Create new entry
       const id = await ctx.db.insert("entries", {
         date: args.date,
-        things: args.things,
+        things: args.things || [], // Default to empty array if not provided
         bonus: args.bonus,
       });
       return id;

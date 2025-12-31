@@ -37,7 +37,7 @@ http.route({
         // Create HTML content from the things array
         const contentHtml = `
           <ul>
-            ${entry.things.map((thing) => `<li>${escapeXml(thing)}</li>`).join("\n            ")}
+            ${(entry.things || []).map((thing) => `<li>${escapeXml(thing)}</li>`).join("\n            ")}
           </ul>${bonusHtml ? `\n${bonusHtml}` : ""}
         `.trim();
 

@@ -4,7 +4,7 @@ import { v } from "convex/values";
 export default defineSchema({
   entries: defineTable({
     date: v.string(),
-    things: v.array(v.string()),
+    things: v.optional(v.array(v.string())),
     bonus: v.optional(v.string()),
     deletedAt: v.optional(v.number()),
   })

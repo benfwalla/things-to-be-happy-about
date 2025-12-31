@@ -48,7 +48,6 @@ async function ensureEntry(date: string) {
   console.log(`No entry found for ${date}. Creating new entry...`);
   const result = await convex.mutation(api.entries.addEntry, {
     date,
-    things: [],
   });
   
   console.log(`Successfully created entry for ${date} with ID: ${result}`);

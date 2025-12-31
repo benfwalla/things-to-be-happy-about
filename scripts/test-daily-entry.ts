@@ -44,7 +44,7 @@ async function testDailyEntry() {
   const existing = await convex.query(api.entries.getEntryByDate, { date: today });
   if (existing) {
     console.log(`✓ Entry exists with ID: ${existing._id}`);
-    console.log(`  Things count: ${existing.things.length}`);
+    console.log(`  Things count: ${existing.things?.length || 0}`);
     console.log(`  Bonus: ${existing.bonus || 'none'}`);
   } else {
     console.log("✗ No entry found for today");
@@ -54,7 +54,6 @@ async function testDailyEntry() {
   console.log("\n2. Running ensureEntry logic...");
   const result = await convex.mutation(api.entries.addEntry, {
     date: today,
-    things: [],
   });
   console.log(`✓ Mutation returned ID: ${result}`);
   
@@ -63,7 +62,7 @@ async function testDailyEntry() {
   const verify = await convex.query(api.entries.getEntryByDate, { date: today });
   if (verify) {
     console.log(`✓ Entry confirmed with ID: ${verify._id}`);
-    console.log(`  Things count: ${verify.things.length}`);
+    console.log(`  Things count: ${verify.things?.length || 0}`);
     console.log(`  Created at: ${new Date(verify._creationTime).toISOString()}`);
   } else {
     console.log("✗ Entry still not found - something is wrong!");
