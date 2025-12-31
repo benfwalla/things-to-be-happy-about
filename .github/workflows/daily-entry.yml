@@ -2,8 +2,7 @@ name: Create Daily Entry
 
 on:
   schedule:
-    - cron: "0 4 * * *" # Midnight Eastern during daylight time
-    - cron: "0 5 * * *" # Midnight Eastern during standard time
+    - cron: "5 6 * * *" # 1:05 AM Eastern
   workflow_dispatch:
     inputs:
       date:
