@@ -35,23 +35,37 @@ function easternDateString(target = new Date()): string {
 }
 
 async function ensureEntry(date: string) {
-  console.log(`Ensuring entry exists for ${date} (America/New_York)`);
-  await convex.mutation(api.entries.addEntry, {
+  console.log(`Checking if entry exists for ${date} (America/New_York)`);
+  
+  // First check if entry exists
+  const existing = await convex.query(api.entries.getEntryByDate, { date });
+  
+  if (existing) {
+    console.log(`Entry already exists for ${date} with ID: ${existing._id}`);
+    return existing;
+  }
+  
+  console.log(`No entry found for ${date}. Creating new entry...`);
+  const result = await convex.mutation(api.entries.addEntry, {
     date,
     things: [],
   });
-  console.log("Entry ensured (idempotent)");
+  
+  console.log(`Successfully created entry for ${date} with ID: ${result}`);
+  return result;
 }
 
 const inputDate = process.argv[2];
 const targetDate = inputDate || easternDateString();
 
+console.log(`Running script for date: ${targetDate}`);
+
 ensureEntry(targetDate)
   .then(() => {
-    console.log(`Done creating entry for ${targetDate}`);
+    console.log(`Done ensuring entry for ${targetDate}`);
     process.exit(0);
   })
   .catch((err) => {
-    console.error("Failed to create entry:", err);
+    console.error("Failed to ensure entry:", err);
     process.exit(1);
   });

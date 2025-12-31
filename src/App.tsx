@@ -48,7 +48,7 @@ export default function App() {
           const todayExists = entries.some((entry) => entry.date === todayDate);
 
           // If today's entry doesn't exist and user is authenticated, add a placeholder at the beginning
-          if (!todayExists) {
+          if (!todayExists && isAuthenticated) {
             const placeholderEntry = {
               _id: "temp-today",
               date: todayDate,
@@ -57,16 +57,34 @@ export default function App() {
             };
             return [placeholderEntry, ...entries];
           }
+          // If we had a placeholder before and now we have a real entry, replace it
+          const hasPlaceholder = prev.some(e => e._id === "temp-today");
+          const realTodayEntry = entries.find(e => e.date === todayDate);
+          if (hasPlaceholder && realTodayEntry) {
+            // Replace placeholder with real entry
+            return [realTodayEntry, ...entries.filter(e => e.date !== todayDate)];
+          }
           return entries;
         }
         // Otherwise, append new entries
         const existingIds = new Set(prev.map((e) => e._id));
         const newEntries = result.page.filter((e) => !existingIds.has(e._id));
+        
+        // Check if we need to replace placeholder
+        const hasPlaceholder = prev.some(e => e._id === "temp-today");
+        const realTodayEntry = result.page.find(e => e.date === todayDate);
+        
+        if (hasPlaceholder && realTodayEntry) {
+          // Replace placeholder with real entry
+          const filteredPrev = prev.filter(e => e._id !== "temp-today");
+          return [realTodayEntry, ...filteredPrev, ...newEntries.filter(e => e.date !== todayDate)];
+        }
+        
         return [...prev, ...newEntries];
       });
       setIsLoadingMore(false);
     }
-  }, [result, cursor, todayDate]);
+  }, [result, cursor, todayDate, isAuthenticated]);
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
