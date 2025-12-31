@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from "react";
-import { PencilSimple, Trash } from "@phosphor-icons/react";
 import { useMutation } from "convex/react";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
 import { BlockNoteSchema, defaultBlockSpecs } from "@blocknote/core";
 import { en } from "@blocknote/core/locales";
 import { api } from "../../convex/_generated/api";
+import { PencilSimple, Trash } from "@phosphor-icons/react";
 import ReactMarkdown from "react-markdown";
 import "@blocknote/mantine/style.css";
 import "./EntryCard.css";
