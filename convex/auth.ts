@@ -51,7 +51,7 @@ export const login = mutation({
     const token = btoa(`${now}-${Math.random()}`);
     
     // Store session in Convex (with expiration)
-    const expiresAt = now + 24 * 60 * 60 * 1000; // 24 hours
+    const expiresAt = now + 10 * 365 * 24 * 60 * 60 * 1000; // 10 years (effectively indefinite)
     await ctx.db.insert("sessions", {
       token,
       expiresAt,
