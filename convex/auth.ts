@@ -109,6 +109,23 @@ export const checkAuth = query({
   },
 });
 
+// Extend all existing sessions to 10 years (run once to fix old 24-hour sessions)
+export const extendAllSessions = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const tenYears = 10 * 365 * 24 * 60 * 60 * 1000;
+    const newExpiry = Date.now() + tenYears;
+
+    const allSessions = await ctx.db.query("sessions").collect();
+
+    for (const session of allSessions) {
+      await ctx.db.patch(session._id, { expiresAt: newExpiry });
+    }
+
+    return { updated: allSessions.length };
+  },
+});
+
 // Clean up expired sessions (can be called periodically)
 export const cleanupExpiredSessions = mutation({
   args: {},
